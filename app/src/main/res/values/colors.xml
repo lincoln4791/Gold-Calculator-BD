@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="c_buy_gold">#B700FA</color>
+    <color name="c_sell_gold">#2968D3</color>
+    <color name="c_calculation_in_vori">#FF5722</color>
+    <color name="primary">#FF018786</color>
+    <color name="primary_dark">#006c6b</color>
+    <color name="c_int_price">#4CAF50</color>
+    <color name="c_bd_price">#3F51B5</color>
+    <color name="c_usd_rate">#6E8701</color>
+    <color name="c_int_price_calculation">#E91E87</color>
+</resources>

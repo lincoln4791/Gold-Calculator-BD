@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Gold Calculator BD</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="dev_info">Name : Mahmudul Karim Lincoln\nSoftware Engineer(Android)\nemail : dev.lincoln47@gmail.com\nDhaka,Bangladesh</string>
+</resources>

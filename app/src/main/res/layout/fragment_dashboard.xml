@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.dashboard.DashboardFragment">
+
+    <LinearLayout
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/ll_horizontalView_MainActivity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="2">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_internationPrice"
+                style="@style/CV_horizontalScroll_MainActivity"
+                app:cardBackgroundColor="@color/c_int_price">
+
+                <LinearLayout style="@style/ll2_horizontalScroll_MainActivity">
+
+                    <ImageView
+                        style="@style/iv_horizontalScroll_MainActivity"
+                        android:src="@drawable/usd" />
+
+                    <TextView
+                        style="@style/tv_horizontalScroll_MainActivity"
+                        android:text="স্বর্ণের আন্তর্জাতিক মূল্য\nGold International Price" />
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_localPrice"
+                style="@style/CV_horizontalScroll_MainActivity"
+                app:cardBackgroundColor="@color/c_bd_price">
+
+                <LinearLayout style="@style/ll2_horizontalScroll_MainActivity">
+
+                    <ImageView
+                        style="@style/iv_horizontalScroll_MainActivity"
+                        android:src="@drawable/bdt" />
+
+                    <TextView
+                        style="@style/tv_horizontalScroll_MainActivity"
+                        android:text="বাংলাদেশে স্বর্ণের মূল্য\nGold Price in BD" />
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_horizontalView_MainActivity2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:weightSum="2">
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_dollarRateToday"
+                style="@style/CV_horizontalScroll_MainActivity"
+                app:cardBackgroundColor="@color/c_usd_rate">
+
+                <LinearLayout style="@style/ll2_horizontalScroll_MainActivity">
+
+                    <ImageView
+                        style="@style/iv_horizontalScroll_MainActivity"
+                        android:src="@drawable/currency_exchange" />
+
+                    <TextView
+                        style="@style/tv_horizontalScroll_MainActivity"
+                        android:text="ডলার রেট\nUSD Rate" />
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_InternationalCalculation"
+                style="@style/CV_horizontalScroll_MainActivity"
+                app:cardBackgroundColor="@color/c_int_price_calculation">
+
+                <LinearLayout style="@style/ll2_horizontalScroll_MainActivity">
+
+                    <ImageView
+                        style="@style/iv_horizontalScroll_MainActivity"
+                        android:src="@drawable/int_market" />
+
+                    <TextView
+                        style="@style/tv_horizontalScroll_MainActivity"
+                        android:text="আন্তর্জাতিক বাজার হিসাব\nInternational Calculation" />
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_horizontalView_MainActivity3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:weightSum="2">
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_checkUpdate"
+                style="@style/CV_horizontalScroll_MainActivity"
+                app:cardBackgroundColor="#9C27B0">
+
+                <LinearLayout style="@style/ll2_horizontalScroll_MainActivity">
+
+                    <ImageView
+                        style="@style/iv_horizontalScroll_MainActivity"
+                        android:src="@drawable/update" />
+
+                    <TextView
+                        style="@style/tv_horizontalScroll_MainActivity"
+                        android:text="অ্যাপ আপডেট\nApp Update" />
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_DevInfo"
+                style="@style/CV_horizontalScroll_MainActivity"
+                app:cardBackgroundColor="#673AB7">
+
+                <LinearLayout style="@style/ll2_horizontalScroll_MainActivity">
+
+                    <ImageView
+                        style="@style/iv_horizontalScroll_MainActivity"
+                        android:src="@drawable/dev_info" />
+
+                    <TextView
+                        style="@style/tv_horizontalScroll_MainActivity"
+                        android:text="ডেভেলাপার ইনফো\nDeveloper Info" />
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        app:adSize="SMART_BANNER"
+        app:adUnitId="ca-app-pub-5778949627900306/4726939538"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

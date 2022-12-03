@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START xml_defaults -->
+<defaultsMap>
+    <entry>
+        <key>banner_add_interval</key>
+        <value>60000</value>
+    </entry>
+
+    <entry>
+        <key>inter_add_interval</key>
+        <value>300000</value>
+    </entry>
+
+
+
+    <entry>
+        <key>ad_remove_duration_day_by_ad</key>
+        <value>1</value>
+    </entry>
+
+</defaultsMap>
+    <!-- END xml_defaults -->

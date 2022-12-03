@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivTitle"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/app_logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/redressed_regular"
+            android:text="Gold Calculator BD"
+            android:textColor="@color/primary"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+        <LinearLayout
+            android:id="@+id/ll_horizontalView_MainActivity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="2">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_goldBuyPrice"
+                style="@style/CV_horizontalScroll_MainActivity"
+                app:cardBackgroundColor="@color/c_buy_gold">
+
+                <LinearLayout style="@style/ll2_horizontalScroll_MainActivity">
+
+                    <ImageView
+                        style="@style/iv_horizontalScroll_MainActivity"
+                        android:src="@drawable/buy_gold" />
+
+                    <TextView
+                        style="@style/tv_horizontalScroll_MainActivity"
+                        android:text="স্বর্ণের ক্রয় মূল্য\nGold Buy Price" />
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_goldSellPrice"
+                style="@style/CV_horizontalScroll_MainActivity"
+                app:cardBackgroundColor="@color/c_sell_gold">
+
+                <LinearLayout style="@style/ll2_horizontalScroll_MainActivity">
+
+                    <ImageView
+                        style="@style/iv_horizontalScroll_MainActivity"
+                        android:src="@drawable/sell_gold" />
+
+                    <TextView
+                        style="@style/tv_horizontalScroll_MainActivity"
+                        android:text="স্বর্ণের বিক্রয় মূল্য\nGold Selling Price" />
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_horizontalView_MainActivity2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:weightSum="2">
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_conversion"
+                style="@style/CV_horizontalScroll_MainActivity"
+                app:cardBackgroundColor="@color/primary">
+
+                <LinearLayout style="@style/ll2_horizontalScroll_MainActivity">
+
+                    <ImageView
+                        style="@style/iv_horizontalScroll_MainActivity"
+                        android:src="@drawable/conversion" />
+
+                    <TextView
+                        style="@style/tv_horizontalScroll_MainActivity"
+                        android:text="ওজন রুপান্তর\nWeight Conversion" />
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_addSubInVori"
+                style="@style/CV_horizontalScroll_MainActivity"
+                app:cardBackgroundColor="@color/c_calculation_in_vori">
+
+                <LinearLayout style="@style/ll2_horizontalScroll_MainActivity">
+
+                    <ImageView
+                        style="@style/iv_horizontalScroll_MainActivity"
+                        android:src="@drawable/calculator" />
+
+                    <TextView
+                        style="@style/tv_horizontalScroll_MainActivity"
+                        android:text="ভরিতে যোগ বিয়োগ\nAdd Subtraction in Bhori" />
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="visible"
+        app:adSize="SMART_BANNER"
+        app:adUnitId="ca-app-pub-5778949627900306/4726939538"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
