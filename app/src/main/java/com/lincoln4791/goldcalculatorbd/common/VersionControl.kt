@@ -1,4 +1,4 @@
-package com.lincoln4791.dailyexpensemanager.common.util
+package com.lincoln4791.goldcalculatorbd.common
 
 import android.app.Dialog
 import android.content.Context
