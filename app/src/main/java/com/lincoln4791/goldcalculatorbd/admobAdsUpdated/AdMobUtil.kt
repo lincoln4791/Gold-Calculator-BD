@@ -6,7 +6,7 @@ import android.util.Log
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.lincoln4791.dailyexpensemanager.common.util.CurrentDate
-import com.lincoln4791.dailyexpensemanager.common.util.NetworkCheck
+import com.lincoln4791.goldcalculatorbd.common.NetworkCheck
 import com.lincoln4791.goldcalculatorbd.BuildConfig
 import com.lincoln4791.goldcalculatorbd.Constants
 import com.lincoln4791.goldcalculatorbd.PrefManager

@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.gms.ads.MobileAds
-import com.lincoln4791.dailyexpensemanager.common.util.NetworkCheck
+import com.lincoln4791.goldcalculatorbd.common.NetworkCheck
 import com.lincoln4791.goldcalculatorbd.common.VersionControl
 import com.lincoln4791.goldcalculatorbd.Constants
 import com.lincoln4791.goldcalculatorbd.PrefManager
