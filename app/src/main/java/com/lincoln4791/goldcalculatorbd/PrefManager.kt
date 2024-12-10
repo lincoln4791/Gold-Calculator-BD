@@ -37,7 +37,7 @@ class PrefManager(val context : Context) {
         set(value) {editor.putString("versionControlCheckLastDate",value).commit()}
 
     var bannerAdInterval:Long
-        get() = pref.getLong("bannerAdInterval", 60000)
+        get() = pref.getLong("bannerAdInterval", 1000)
         set(value) {editor.putLong("bannerAdInterval",value).commit()}
 
     var interAdInterval:Long

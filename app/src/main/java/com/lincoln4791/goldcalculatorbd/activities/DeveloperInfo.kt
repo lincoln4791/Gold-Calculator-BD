@@ -1,10 +1,8 @@
 package com.lincoln4791.goldcalculatorbd.activities
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
-import com.lincoln4791.goldcalculatorbd.MainActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.lincoln4791.goldcalculatorbd.R
 
 class DeveloperInfo : AppCompatActivity() {

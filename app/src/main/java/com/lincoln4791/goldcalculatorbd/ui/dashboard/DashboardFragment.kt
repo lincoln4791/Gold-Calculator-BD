@@ -13,6 +13,7 @@ import com.lincoln4791.goldcalculatorbd.Constants
 import com.lincoln4791.goldcalculatorbd.PrefManager
 import com.lincoln4791.goldcalculatorbd.Utils
 import com.lincoln4791.goldcalculatorbd.activities.DeveloperInfo
+import com.lincoln4791.goldcalculatorbd.activities.DeveloperProfile
 import com.lincoln4791.goldcalculatorbd.activities.DollerRate
 import com.lincoln4791.goldcalculatorbd.activities.GoldPriceBangladesh
 import com.lincoln4791.goldcalculatorbd.activities.GoldPriceInternational
@@ -59,8 +60,9 @@ class DashboardFragment : Fragment() {
         }
 
         binding.cvDevInfo.setOnClickListener {
-            requireContext().startActivity(Intent(requireContext(),DeveloperInfo::class.java))
+            //requireContext().startActivity(Intent(requireContext(),DeveloperInfo::class.java))
             //requireActivity().finish()
+            requireContext().startActivity(Intent(requireContext(), DeveloperProfile::class.java))
         }
 
     }
