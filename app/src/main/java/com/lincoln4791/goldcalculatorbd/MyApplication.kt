@@ -103,6 +103,7 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks,Life
 
         fun loadAd(context: Context) {
             // Do not load ad if there is an unused ad or one is already loading.
+            val prefManager = PrefManager(context)
             if (isLoadingAd || isAdAvailable()) {
                 return
             }
@@ -110,7 +111,7 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks,Life
             isLoadingAd = true
             val request = AdRequest.Builder().build()
             AppOpenAd.load(
-                context, AdUnitIds.APP_OPEN_TEST, request,
+                context, prefManager.adUnitIdAppOpen, request,
                 AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
                 object : AppOpenAdLoadCallback() {
 

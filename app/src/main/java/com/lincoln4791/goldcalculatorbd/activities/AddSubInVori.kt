@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -12,14 +11,13 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.lincoln4791.dailyexpensemanager.admobAdsUpdated.InterstistialAdHelper
-import com.lincoln4791.dailyexpensemanager.common.util.CurrentDate
 import com.lincoln4791.goldcalculatorbd.*
 import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.AdMobUtil
-import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.AdUnitIds
 import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.BannerAddHelper
 import com.lincoln4791.goldcalculatorbd.databinding.ActivityWeightPluMinusBinding
 
@@ -289,6 +287,7 @@ class AddSubInVori : AppCompatActivity() {
             binding.adView.visibility = View.VISIBLE
             MobileAds.initialize(this) {
                 val bannerAdHelper = BannerAddHelper(this)
+                //binding.adView.adUnitId=prefManager.adUnitIdBanner
                 bannerAdHelper.loadBannerAd(binding.adView) {
                     if (it) {
                         prefManager.lastBannerAdShownAdSub = System.currentTimeMillis()
@@ -325,7 +324,7 @@ class AddSubInVori : AppCompatActivity() {
         interAd = InterstistialAdHelper(this, this,mInterstitialAd)
         val lastAdShown = prefManager.lastInterstitialAdShown
         if (AdMobUtil.canBannerAdShow(this, lastAdShown,Constants.AD_TYPE_INTER)) {
-            interAd.loadinterAd(AdUnitIds.INTERSTITIAL) {
+            interAd.loadinterAd(prefManager.adUnitIdInterstitial) {
                 Log.d("InterAd", "Inter ad loaded -> $it")
                 isAdLoaded = it
             }

@@ -37,7 +37,7 @@ class PrefManager(val context : Context) {
         set(value) {editor.putString("versionControlCheckLastDate",value).commit()}
 
     var bannerAdInterval:Long
-        get() = pref.getLong("bannerAdInterval", 1000)
+        get() = pref.getLong("bannerAdInterval", 2000)
         set(value) {editor.putLong("bannerAdInterval",value).commit()}
 
     var interAdInterval:Long
@@ -45,7 +45,21 @@ class PrefManager(val context : Context) {
         set(value) {editor.putLong("interAdInterval",value).commit()}
 
 
+    var adUnitIdBanner:String
+        get() = pref.getString("adUnitIdBanner", "ca-app-pub-5778949627900306/4726939538")!!
+        set(value) {editor.putString("adUnitIdBanner",value).commit()}
 
+    var adUnitIdInterstitial:String
+        get() = pref.getString("adUnitIdInterstitial", "ca-app-pub-5778949627900306/4282132698")!!
+        set(value) {editor.putString("adUnitIdInterstitial",value).commit()}
+
+    var adUnitIdRewarded:String
+        get() = pref.getString("adUnitIdRewarded", "ca-app-pub-5778949627900306/7643052880")!!
+        set(value) {editor.putString("adUnitIdRewarded",value).commit()}
+
+    var adUnitIdAppOpen:String
+        get() = pref.getString("adUnitIdAppOpen", "ca-app-pub-5778949627900306/8602648476")!!
+        set(value) {editor.putString("adUnitIdAppOpen",value).commit()}
 
 
 

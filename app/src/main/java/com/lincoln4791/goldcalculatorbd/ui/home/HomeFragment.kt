@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
@@ -23,11 +24,13 @@ import com.lincoln4791.goldcalculatorbd.activities.WeightConversion
 import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.AdMobUtil
 import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.AdUnitIds
 import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.BannerAddHelper
+import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.GlobalAds
+import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.GlobalAds.rewardedAd
 import com.lincoln4791.goldcalculatorbd.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 
-    private var rewardedAd: RewardedAd? = null
+
     private lateinit var binding : FragmentHomeBinding
     private lateinit var prefManager : PrefManager
 
@@ -44,7 +47,6 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         prefManager = PrefManager(requireContext())
         initAdMob()
-        loadRewardedAd()
         initCheckAppVersion()
 
         binding.cvGoldBuyPrice.setOnClickListener {
@@ -67,64 +69,10 @@ class HomeFragment : Fragment() {
             requireActivity().finish()
         }
 
-        binding.ivTitle.setOnClickListener{
-            showRewardedAd()
-        }
-
-
 
     }
 
-    private fun loadRewardedAd() {
-        val adRequest = AdRequest.Builder().build()
-        RewardedAd.load(
-            requireContext(),
-            AdUnitIds.REWARDED_AD_TEST, // Test Ad Unit ID
-            adRequest,
-            object : RewardedAdLoadCallback() {
-                override fun onAdLoaded(ad: RewardedAd) {
-                    Log.d("tag", "Rewarded ad loaded.")
-                    rewardedAd = ad
-                }
 
-                override fun onAdFailedToLoad(error: com.google.android.gms.ads.LoadAdError) {
-                    Log.d("tag", "Failed to load rewarded ad: ${error.message}")
-                    rewardedAd = null
-                }
-            }
-        )
-    }
-
-
-    private fun showRewardedAd() {
-        if (rewardedAd != null) {
-            rewardedAd?.show(requireActivity()) { rewardItem: RewardItem ->
-                // Handle the reward
-                val rewardAmount = rewardItem.amount
-                val rewardType = rewardItem.type
-                Log.d("tag", "User rewarded with $rewardAmount $rewardType")
-            }
-
-            rewardedAd?.fullScreenContentCallback = object : com.google.android.gms.ads.FullScreenContentCallback() {
-                override fun onAdDismissedFullScreenContent() {
-                    Log.d("tag", "Ad dismissed.")
-                    rewardedAd = null
-                    loadRewardedAd() // Load a new ad
-                }
-
-                override fun onAdFailedToShowFullScreenContent(adError: com.google.android.gms.ads.AdError) {
-                    Log.d("tag", "Ad failed to show: ${adError.message}")
-                    rewardedAd = null
-                }
-
-                override fun onAdShowedFullScreenContent() {
-                    Log.d("tag", "Ad showed fullscreen content.")
-                }
-            }
-        } else {
-            Log.d("tag", "Rewarded ad is not ready yet.")
-        }
-    }
 
 
     private fun initAdMob() {
@@ -155,7 +103,7 @@ class HomeFragment : Fragment() {
 
 
     fun initCheckAppVersion() {
-        if(System.currentTimeMillis()-prefManager.lastAppVersionRemoteConfigDataFetchTime>= Constants.INTERVAL_DAILY){
+        if(System.currentTimeMillis()-prefManager.lastAppVersionRemoteConfigDataFetchTime>= Constants.INTERVAL_SIX_HOUR){
             if (NetworkCheck.isConnect(requireContext())) {
                 //VersionControl.checkVersion(requireContext())
                 VersionControl.checkVersion(requireContext())

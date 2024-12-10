@@ -451,6 +451,7 @@ class GoldSellPrice : AppCompatActivity() {
             binding.adView.visibility = View.VISIBLE
             MobileAds.initialize(this) {
                 val bannerAdHelper = BannerAddHelper(this)
+                //binding.adView.adUnitId=prefManager.adUnitIdBanner
                 bannerAdHelper.loadBannerAd(binding.adView) {
                     if (it) {
                         prefManager.lastBannerAdShownGSP = System.currentTimeMillis()
@@ -472,7 +473,7 @@ class GoldSellPrice : AppCompatActivity() {
         interAd = InterstistialAdHelper(this, this,mInterstitialAd)
         val lastAdShown = prefManager.lastInterstitialAdShown
         if (AdMobUtil.canBannerAdShow(this, lastAdShown,Constants.AD_TYPE_INTER)) {
-            interAd.loadinterAd(AdUnitIds.INTERSTITIAL) {
+            interAd.loadinterAd(prefManager.adUnitIdInterstitial) {
                 Log.d("InterAd", "Inter ad loaded -> $it")
                 isAdLoaded = it
             }

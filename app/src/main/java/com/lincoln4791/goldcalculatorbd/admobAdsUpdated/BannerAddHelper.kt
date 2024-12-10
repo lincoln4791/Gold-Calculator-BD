@@ -9,8 +9,11 @@ class BannerAddHelper(private val context: Context) {
     val prefManager = PrefManager(context)
 
 
-    fun loadBannerAd(mAdView : AdView, callBack:(isShown:Boolean)->Unit){
+    fun loadBannerAd(mAdView : AdView,addUnitID:String?=null, callBack:(isShown:Boolean)->Unit){
         //MobileAds.initialize(context)
+        addUnitID?.let {
+            mAdView.setAdUnitId(it)
+        }
 
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)

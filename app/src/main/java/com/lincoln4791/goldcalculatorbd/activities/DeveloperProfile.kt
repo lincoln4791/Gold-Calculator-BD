@@ -30,13 +30,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.lincoln4791.goldcalculatorbd.Utils
 import com.lincoln4791.goldcalculatorbd.models.getSampleProfile
 import com.lincoln4791.goldcalculatorbd.ui.components.SetNavigationBarColor
 import com.lincoln4791.goldcalculatorbd.ui.components.TopAppBarWithBackButton
 
 class DeveloperProfile : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        Utils.changeNavBarColor(this,this)
         super.onCreate(savedInstanceState)
+
         setContent {
             val profile = getSampleProfile()
             MaterialTheme {

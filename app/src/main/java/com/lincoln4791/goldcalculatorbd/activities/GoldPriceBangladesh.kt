@@ -72,6 +72,7 @@ class GoldPriceBangladesh : AppCompatActivity() {
             binding.adView.visibility = View.VISIBLE
             MobileAds.initialize(this) {
                 val bannerAdHelper = BannerAddHelper(this)
+                //binding.adView.adUnitId=prefManager.adUnitIdBanner
                 bannerAdHelper.loadBannerAd(binding.adView) {
                     if (it) {
                         prefManager.lastBannerAdShownGPI = System.currentTimeMillis()

@@ -3,7 +3,7 @@
 <defaultsMap>
     <entry>
         <key>banner_add_interval</key>
-        <value>60000</value>
+        <value>2000</value>
     </entry>
 
     <entry>
@@ -11,11 +11,27 @@
         <value>300000</value>
     </entry>
 
-
-
     <entry>
         <key>ad_remove_duration_day_by_ad</key>
         <value>1</value>
+    </entry>
+
+
+    <entry>
+        <key>add_unit_id_banner</key>
+        <value>ca-app-pub-5778949627900306/4726939538</value>
+    </entry>
+    <entry>
+        <key>ad_unit_id_interstitial</key>
+        <value>ca-app-pub-5778949627900306/4282132698</value>
+    </entry>
+    <entry>
+        <key>ad_unit_id_rewarded</key>
+        <value>ca-app-pub-5778949627900306/7643052880</value>
+    </entry>
+    <entry>
+        <key>add_unit_id_appopen</key>
+        <value>ca-app-pub-5778949627900306/8602648476</value>
     </entry>
 
 </defaultsMap>

@@ -274,6 +274,7 @@ class WeightConversion : AppCompatActivity() {
             binding.adView.visibility = View.VISIBLE
             MobileAds.initialize(this) {
                 val bannerAdHelper = BannerAddHelper(this)
+                //binding.adView.adUnitId=prefManager.adUnitIdBanner
                 bannerAdHelper.loadBannerAd(binding.adView) {
                     if (it) {
                         prefManager.lastBannerAdShownWC = System.currentTimeMillis()
@@ -296,7 +297,7 @@ class WeightConversion : AppCompatActivity() {
         interAd = InterstistialAdHelper(this, this,mInterstitialAd)
         val lastAdShown = prefManager.lastInterstitialAdShown
         if (AdMobUtil.canBannerAdShow(this, lastAdShown,Constants.AD_TYPE_INTER)) {
-            interAd.loadinterAd(AdUnitIds.INTERSTITIAL) {
+            interAd.loadinterAd(prefManager.adUnitIdInterstitial) {
                 Log.d("InterAd", "Inter ad loaded -> $it")
                 isAdLoaded = it
             }

@@ -1,17 +1,14 @@
 package com.lincoln4791.goldcalculatorbd.activities
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.webkit.WebSettings
 import android.webkit.WebViewClient
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.ads.MobileAds
-import com.lincoln4791.dailyexpensemanager.common.util.CurrentDate
 import com.lincoln4791.goldcalculatorbd.Constants
-import com.lincoln4791.goldcalculatorbd.MainActivity
 import com.lincoln4791.goldcalculatorbd.PrefManager
 import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.AdMobUtil
 import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.BannerAddHelper
@@ -69,6 +66,7 @@ class DollerRate : AppCompatActivity() {
             binding.adView.visibility = View.VISIBLE
             MobileAds.initialize(this) {
                 val bannerAdHelper = BannerAddHelper(this)
+                //binding.adView.adUnitId=prefManager.adUnitIdBanner
                 bannerAdHelper.loadBannerAd(binding.adView) {
                     if (it) {
                         prefManager.lastBannerAdShownDollarRate = System.currentTimeMillis()
