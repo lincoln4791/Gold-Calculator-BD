@@ -75,7 +75,7 @@ class DashboardFragment : Fragment() {
 
             binding.adView.visibility = View.VISIBLE
             MobileAds.initialize(requireContext()) {
-                val bannerAdHelper = BannerAddHelper(requireContext())
+                val bannerAdHelper = BannerAddHelper()
                 //binding.adView.adUnitId=prefManager.adUnitIdBanner
                 bannerAdHelper.loadBannerAd(binding.adView) {
                     if (it) {

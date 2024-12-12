@@ -45,7 +45,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        prefManager = PrefManager(requireContext())
+        prefManager = PrefManager(requireActivity().applicationContext)
         initAdMob()
         initCheckAppVersion()
 
@@ -76,14 +76,13 @@ class HomeFragment : Fragment() {
 
 
     private fun initAdMob() {
-        val  prefManager = PrefManager(requireContext())
         val lastAdShowDate = prefManager.lastBannerAdShownHomeF
         if (AdMobUtil.canBannerAdShow(requireContext(), lastAdShowDate,Constants.AD_TYPE_BANNER)) {
             Log.d("tag","Banner Ad Home will load")
 
             binding.adView.visibility = View.VISIBLE
             MobileAds.initialize(requireContext()) {
-                val bannerAdHelper = BannerAddHelper(requireContext())
+                val bannerAdHelper = BannerAddHelper()
                 bannerAdHelper.loadBannerAd(binding.adView) {
                     if (it) {
                         prefManager.lastBannerAdShownHomeF = System.currentTimeMillis()

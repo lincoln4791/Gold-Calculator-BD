@@ -249,7 +249,7 @@ class GoldBuyPrice : AppCompatActivity() {
 
             binding.adView.visibility = View.VISIBLE
             MobileAds.initialize(this) {
-                val bannerAdHelper = BannerAddHelper(this)
+                val bannerAdHelper = BannerAddHelper()
                 //binding.adView.adUnitId=prefManager.adUnitIdBanner
                 bannerAdHelper.loadBannerAd(binding.adView) {
                     if (it) {

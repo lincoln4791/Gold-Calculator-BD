@@ -1,13 +1,9 @@
 package com.lincoln4791.goldcalculatorbd.admobAdsUpdated
 
-import android.content.Context
 import android.util.Log
 import com.google.android.gms.ads.*
-import com.lincoln4791.goldcalculatorbd.PrefManager
 
-class BannerAddHelper(private val context: Context) {
-    val prefManager = PrefManager(context)
-
+class BannerAddHelper() {
 
     fun loadBannerAd(mAdView : AdView,addUnitID:String?=null, callBack:(isShown:Boolean)->Unit){
         //MobileAds.initialize(context)
