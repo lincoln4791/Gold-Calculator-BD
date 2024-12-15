@@ -7,14 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.rewarded.RewardItem
-import com.google.android.gms.ads.rewarded.RewardedAd
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.lincoln4791.goldcalculatorbd.common.NetworkCheck
-import com.lincoln4791.goldcalculatorbd.common.VersionControl
 import com.lincoln4791.goldcalculatorbd.Constants
 import com.lincoln4791.goldcalculatorbd.PrefManager
 import com.lincoln4791.goldcalculatorbd.activities.AddSubInVori
@@ -22,11 +15,11 @@ import com.lincoln4791.goldcalculatorbd.activities.GoldBuyPrice
 import com.lincoln4791.goldcalculatorbd.activities.GoldSellPrice
 import com.lincoln4791.goldcalculatorbd.activities.WeightConversion
 import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.AdMobUtil
-import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.AdUnitIds
 import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.BannerAddHelper
-import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.GlobalAds
-import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.GlobalAds.rewardedAd
+import com.lincoln4791.goldcalculatorbd.common.NetworkCheck
+import com.lincoln4791.goldcalculatorbd.common.VersionControl
 import com.lincoln4791.goldcalculatorbd.databinding.FragmentHomeBinding
+import com.lincoln4791.goldcalculatorbd.ui.TempActivity
 
 class HomeFragment : Fragment() {
 
@@ -67,6 +60,10 @@ class HomeFragment : Fragment() {
         binding.cvAddSubInVori.setOnClickListener {
             requireContext().startActivity(Intent(requireContext(),AddSubInVori::class.java))
             requireActivity().finish()
+        }
+
+        binding.ivTitle.setOnClickListener{
+            requireContext().startActivity(Intent(requireContext(), TempActivity::class.java))
         }
 
 
