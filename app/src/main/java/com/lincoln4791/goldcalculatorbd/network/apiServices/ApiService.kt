@@ -4,9 +4,9 @@ import com.lincoln4791.goldcalculatorbd.ui.auth.login.models.LoginRequest
 import com.lincoln4791.goldcalculatorbd.ui.auth.login.models.LoginResponse
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.GET;
+import retrofit2.http.POST
 
 interface ApiService {
-    @GET("/api/login")
+    @POST("/api/login")
     suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
 }

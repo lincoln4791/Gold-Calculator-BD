@@ -1,5 +1,6 @@
 package com.lincoln4791.goldcalculatorbd.di
 
+import com.lincoln4791.goldcalculatorbd.Constants
 import com.lincoln4791.goldcalculatorbd.network.apiServices.ApiService
 import dagger.Module
 import dagger.Provides
@@ -15,7 +16,7 @@ object NetworkModule {
     @Provides
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://api.example.com/") // Replace with your API URL
+            .baseUrl(Constants.BASE_URL) // Replace with your API URL
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

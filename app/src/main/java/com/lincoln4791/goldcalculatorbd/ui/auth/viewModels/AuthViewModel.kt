@@ -1,4 +1,4 @@
-package com.lincoln4791.goldcalculatorbd.ui.auth.login.viewmodels
+package com.lincoln4791.goldcalculatorbd.ui.auth.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MyViewModel @Inject constructor(private val repository: AuthRepository) : ViewModel() {
+class AuthViewModel @Inject constructor(private val repository: AuthRepository) : ViewModel() {
     private val _uiState = MutableStateFlow<Result<LoginResponse>?>(null)
     val uiState: StateFlow<Result<LoginResponse>?> = _uiState
 

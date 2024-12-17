@@ -28,6 +28,9 @@
             android:name=".ui.auth.login.screens.LoginActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.auth.signup.screens.SignUpActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.DeveloperInfo"
             android:exported="false"
             android:label="ডেভেলাপার ইনফো"

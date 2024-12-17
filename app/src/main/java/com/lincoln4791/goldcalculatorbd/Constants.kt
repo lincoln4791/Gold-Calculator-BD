@@ -1,6 +1,7 @@
 package com.lincoln4791.goldcalculatorbd
 
 object Constants {
+    const val BASE_URL = "https://namely-driving-filly.ngrok-free.app"
     const val GOLD_PRICE_LINK = "https://goldprice.org/"
     const val PLAY_STORE_APP_LINK = "https://play.google.com/store/apps/details?id=com.lincoln4791.goldcalculatorbd"
     const val APP_VERSION = "appVersion"
