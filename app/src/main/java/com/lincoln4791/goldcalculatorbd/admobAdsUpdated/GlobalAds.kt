@@ -1,7 +1,7 @@
 package com.lincoln4791.goldcalculatorbd.admobAdsUpdated
 
-import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd
 
 object GlobalAds {
-     var rewardedAd: RewardedAd? = null
+     var rewardedInterstitialAd: RewardedInterstitialAd? = null
 }

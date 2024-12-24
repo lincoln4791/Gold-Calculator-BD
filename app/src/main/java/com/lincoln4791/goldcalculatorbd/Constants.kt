@@ -11,6 +11,7 @@ object Constants {
     const val REMOTE_CONFIG_VALUE_FOR_AD_UNIT_ID_BANNER = "add_unit_id_banner"
     const val REMOTE_CONFIG_VALUE_FOR_AD_UNIT_ID_INTERSTITIAL = "ad_unit_id_interstitial"
     const val REMOTE_CONFIG_VALUE_FOR_AD_UNIT_ID_REWARD = "ad_unit_id_rewarded"
+    const val REMOTE_CONFIG_VALUE_FOR_AD_UNIT_ID_REWARD_INTERSTITIAL = "ad_unit_id_rewarded_interstitial"
     const val REMOTE_CONFIG_VALUE_FOR_AD_UNIT_ID_APPOPEN = "add_unit_id_appopen"
 
 

@@ -12,11 +12,10 @@ import androidx.navigation.ui.setupWithNavController
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.rewarded.RewardItem
-import com.google.android.gms.ads.rewarded.RewardedAd
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd
+import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.AdUnitIds
-import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.GlobalAds.rewardedAd
+import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.GlobalAds.rewardedInterstitialAd
 import com.lincoln4791.goldcalculatorbd.common.FirebaseUtil.fetchCommonDataFromRemoteConfig
 import com.lincoln4791.goldcalculatorbd.databinding.ActivityMainBinding
 
@@ -44,8 +43,8 @@ class MainActivity : AppCompatActivity() {
             confirmWatchAd()
         }
 
-        if(rewardedAd==null){
-            loadRewardedAd()
+        if(rewardedInterstitialAd==null){
+            loadRewardedInterstitialAd()
         }
 
         Utils.changeNavBarColor(this,this)
@@ -59,21 +58,25 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun loadRewardedAd() {
+    private fun loadRewardedInterstitialAd() {
         val adRequest = AdRequest.Builder().build()
-        RewardedAd.load(
+        RewardedInterstitialAd.load(
             this,
-            prefManager.adUnitIdRewarded,
+            prefManager.adUnitIdRewardedInterstitial,
             adRequest,
-            object : RewardedAdLoadCallback() {
-                override fun onAdLoaded(ad: RewardedAd) {
+            object : RewardedInterstitialAdLoadCallback() {
+                override fun onAdLoaded(ad: RewardedInterstitialAd) {
+                    super.onAdLoaded(ad)
+                    rewardedInterstitialAd = ad
+                }
+                /*override fun onAdLoaded(ad: RewardedAd) {
                     Log.d("tag", "Rewarded ad loaded.")
                     rewardedAd = ad
-                }
+                }*/
 
                 override fun onAdFailedToLoad(error: com.google.android.gms.ads.LoadAdError) {
                     Log.d("tag", "Failed to load rewarded ad: ${error.message}")
-                    rewardedAd = null
+                    rewardedInterstitialAd = null
                 }
             }
         )
@@ -81,25 +84,25 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun showRewardedAd() {
-        if (rewardedAd != null) {
-            rewardedAd?.show(this) { rewardItem: RewardItem ->
+        if (rewardedInterstitialAd != null) {
+            rewardedInterstitialAd?.show(this) { rewardItem: RewardItem ->
                 // Handle the reward
                 val rewardAmount = rewardItem.amount
                 val rewardType = rewardItem.type
                 Log.d("tag", "User rewarded with $rewardAmount $rewardType")
             }
 
-            rewardedAd?.fullScreenContentCallback = object : com.google.android.gms.ads.FullScreenContentCallback() {
+            rewardedInterstitialAd?.fullScreenContentCallback = object : com.google.android.gms.ads.FullScreenContentCallback() {
                 override fun onAdDismissedFullScreenContent() {
                     Log.d("tag", "Ad dismissed.")
-                    rewardedAd = null
-                    loadRewardedAd() // L
+                    rewardedInterstitialAd = null
+                    loadRewardedInterstitialAd() // L
                     showWatchAdThanksGivingDialog()// oad a new ad
                 }
 
                 override fun onAdFailedToShowFullScreenContent(adError: com.google.android.gms.ads.AdError) {
                     Log.d("tag", "Ad failed to show: ${adError.message}")
-                    rewardedAd = null
+                    rewardedInterstitialAd = null
                 }
 
                 override fun onAdShowedFullScreenContent() {

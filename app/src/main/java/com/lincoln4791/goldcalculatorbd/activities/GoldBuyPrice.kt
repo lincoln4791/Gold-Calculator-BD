@@ -16,10 +16,8 @@ import androidx.cardview.widget.CardView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.lincoln4791.dailyexpensemanager.admobAdsUpdated.InterstistialAdHelper
-import com.lincoln4791.dailyexpensemanager.common.util.CurrentDate
 import com.lincoln4791.goldcalculatorbd.*
 import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.AdMobUtil
-import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.AdUnitIds
 import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.BannerAddHelper
 import com.lincoln4791.goldcalculatorbd.databinding.ActivityGoldBuyPriceBinding
 import kotlin.math.roundToInt
@@ -29,14 +27,17 @@ class GoldBuyPrice : AppCompatActivity() {
     private lateinit var interAd: InterstistialAdHelper
     private var mInterstitialAd: InterstitialAd? = null
     private var isAdLoaded = false
-    private var unit = "প্রতি ভরি(Per Bhori)"
-    private var unitIndex = 0
+    private var priceUnit = PRICE_UNIT_GRAM_TEXT
+    private var priceUnitIndex = PRICE_UNIT_GRAM_INDEX
     private lateinit var binding : ActivityGoldBuyPriceBinding
     private var gram = 0.0
     private var vori = 0
     private var ana = 0
     private var roti = 0
     private var point = 0
+
+    private var weightChooserUnitText = WEIGHT_CHOOSER_UNIT_GRAM_TEXT
+    private var weightChooserUnitIndex = WEIGHT_CHOOSER_UNIT_GRAM_INDEX
 
     override fun onCreate(savedInstanceState: Bundle?) {
         prefManager = PrefManager(this)
@@ -46,18 +47,22 @@ class GoldBuyPrice : AppCompatActivity() {
         initInterstitialAd()
         Utils.changeNavBarColor(this,this)
         enableBackButton()
-        initSpinner()
+        initPriceChooserSpinner()
+        initUnitChooserSpinner()
         initAdMob()
 
         binding.cvGoldWeight.setOnClickListener {
-            if(unitIndex==0){
-                showVoriWeightDialog()
-            }
-            else if(unitIndex==1){
+
+            if(weightChooserUnitIndex==WEIGHT_CHOOSER_UNIT_GRAM_INDEX){
                 showGramWeightDialog()
             }
+            else if(weightChooserUnitIndex==WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX){
+                showVoriWeightDialog()
+            }
             else{
+                Utils.showVoriWeightDialogForIndividualCalc(this@GoldBuyPrice){amount,unit->
 
+                }
             }
 
         }
@@ -78,21 +83,21 @@ class GoldBuyPrice : AppCompatActivity() {
 
     }
 
-    private fun initSpinner() {
-        val spinnerArray = arrayListOf("প্রতি ভরি(Per Bhori)","প্রতি গ্রাম(Per Gram)")
+    private fun initPriceChooserSpinner() {
+        val spinnerArray = arrayListOf(PRICE_UNIT_GRAM_TEXT,PRICE_UNIT_VORI_TEXT)
         val spinnerAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this@GoldBuyPrice,
             android.R.layout.simple_spinner_dropdown_item,
             spinnerArray)
         val spinnerIndex: Int
-        when (unit) {
-            "প্রতি ভরি" -> {
-                spinnerIndex = 0
+        when (priceUnit) {
+            PRICE_UNIT_VORI_TEXT -> {
+                spinnerIndex = PRICE_UNIT_VORI_INDEX
             }
-            "প্রতি গ্রাম" -> {
-                spinnerIndex = 1
+            PRICE_UNIT_GRAM_TEXT -> {
+                spinnerIndex = PRICE_UNIT_GRAM_INDEX
             }
             else -> {
-                spinnerIndex=0
+                spinnerIndex=PRICE_UNIT_VORI_INDEX
             }
         }
         binding.spinnerUnit.adapter = spinnerAdapter
@@ -106,21 +111,80 @@ class GoldBuyPrice : AppCompatActivity() {
             ) {
                 when (position) {
                     0 -> {
-                        unit="প্রতি ভরি"
-                        unitIndex=0
+                        priceUnit=PRICE_UNIT_GRAM_TEXT
+                        priceUnitIndex=PRICE_UNIT_GRAM_INDEX
                         refreshAllValues()
                     }
                     1 -> {
-                        unit="প্রতি গ্রাম"
-                        unitIndex=1
+                        priceUnit=PRICE_UNIT_VORI_TEXT
+                        priceUnitIndex=PRICE_UNIT_VORI_INDEX
                         refreshAllValues()
+                    }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                priceUnit=PRICE_UNIT_GRAM_TEXT
+                priceUnitIndex=PRICE_UNIT_GRAM_INDEX
+            }
+        }
+    }
+
+    private fun initUnitChooserSpinner() {
+        val spinnerArray = arrayListOf(
+            WEIGHT_CHOOSER_UNIT_GRAM_TEXT,
+            WEIGHT_CHOOSER_UNIT_TOGETHER_TEXT,
+            WEIGHT_CHOOSER_UNIT_SEPARATELY_TEXT)
+        val spinnerAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this@GoldBuyPrice,
+            R.layout.custom_spinner_item,
+            spinnerArray)
+        val spinnerIndex: Int
+        when (weightChooserUnitText) {
+            WEIGHT_CHOOSER_UNIT_GRAM_TEXT -> {
+                spinnerIndex = WEIGHT_CHOOSER_UNIT_GRAM_INDEX
+            }
+            WEIGHT_CHOOSER_UNIT_TOGETHER_TEXT -> {
+                spinnerIndex = WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX
+            }
+            WEIGHT_CHOOSER_UNIT_SEPARATELY_TEXT -> {
+                spinnerIndex = WEIGHT_CHOOSER_UNIT_SEPARATELY_INDEX
+            }
+            else -> {
+                spinnerIndex=WEIGHT_CHOOSER_UNIT_GRAM_INDEX
+            }
+        }
+        binding.spinnerWeightUnitChooser.adapter = spinnerAdapter
+        binding.spinnerWeightUnitChooser.setSelection(spinnerIndex)
+        binding.spinnerWeightUnitChooser.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View,
+                position: Int,
+                id: Long,
+            ) {
+                when (position) {
+                    0 -> {
+                        weightChooserUnitText=WEIGHT_CHOOSER_UNIT_GRAM_TEXT
+                        weightChooserUnitIndex=WEIGHT_CHOOSER_UNIT_GRAM_INDEX
+                        //refreshAllValues()
+                    }
+                    1 -> {
+                        weightChooserUnitText=WEIGHT_CHOOSER_UNIT_TOGETHER_TEXT
+                        weightChooserUnitIndex=WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX
+                        //refreshAllValues()
+                    }
+                    2 -> {
+                        weightChooserUnitText=WEIGHT_CHOOSER_UNIT_SEPARATELY_TEXT
+                        weightChooserUnitIndex=WEIGHT_CHOOSER_UNIT_SEPARATELY_INDEX
+                        //refreshAllValues()
                     }
 
                 }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                unit="প্রতি ভরি"
+                weightChooserUnitText=WEIGHT_CHOOSER_UNIT_GRAM_TEXT
+                weightChooserUnitIndex=WEIGHT_CHOOSER_UNIT_GRAM_INDEX
             }
         }
     }
@@ -188,7 +252,9 @@ class GoldBuyPrice : AppCompatActivity() {
 
     }
 
-    private fun calculatePriceVori(vori:Int, ana:Int, roti:Int, point:Int, pricePerVori : Int) {
+
+
+    private fun calculatePriceVoriTogether(vori:Int, ana:Int, roti:Int, point:Int, pricePerVori : Int) {
         val totalVori : kotlin.Double  = vori.toDouble()+(ana/16.0)+(roti/96.0)+(point/960)
         val totalPrice  = totalVori*pricePerVori
         val totalPriceWithTax  = totalVori*pricePerVori*1.05
@@ -307,12 +373,53 @@ class GoldBuyPrice : AppCompatActivity() {
     }
 
     private fun initCalculation(){
-        if(unitIndex==0){
+        if(priceUnitIndex==PRICE_UNIT_GRAM_INDEX){
+            if(weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_GRAM_INDEX){
+                calculatePriceGram(gram,binding.etUnitPrice.text.toString().toDouble())
+            }
+            else if(weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX){
+
+            }
+            else if(weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_SEPARATELY_INDEX){
+
+            }
+        }
+        else if (priceUnitIndex==PRICE_UNIT_VORI_INDEX){
+            if(weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_GRAM_INDEX){
+
+            }
+            else if(weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX){
+                calculatePriceVoriTogether(vori,ana,roti,point,binding.etUnitPrice.text.toString().toInt())
+            }
+            else if(weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_SEPARATELY_INDEX){
+
+            }
+        }
+
+    /*    if(priceUnitIndex==PRICE_UNIT_VORI_INDEX){
             calculatePriceVori(vori,ana,roti,point,binding.etUnitPrice.text.toString().toInt())
         }
-        else if (unitIndex==1){
+        else if (priceUnitIndex==PRICE_UNIT_GRAM_INDEX){
             calculatePriceGram(gram,binding.etUnitPrice.text.toString().toDouble())
-        }
+        }*/
+    }
+
+    companion object{
+        const val WEIGHT_CHOOSER_UNIT_GRAM_INDEX = 0
+        const val WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX = 1
+        const val WEIGHT_CHOOSER_UNIT_SEPARATELY_INDEX = 2
+
+        const val WEIGHT_CHOOSER_UNIT_GRAM_TEXT = "গ্রামে মাপুন-Measure In Gram"
+        const val WEIGHT_CHOOSER_UNIT_TOGETHER_TEXT = "একসাথে ভরি,আনা,রতি,পয়েন্ট মিলিয়ে-Vori,Ana,Roti,Point Together"
+        const val WEIGHT_CHOOSER_UNIT_SEPARATELY_TEXT = "আলাদা ভাবে ভরি/আনা/রতি/পয়েন্ট-Separately Vori,Ana,Roti,Point"
+
+        const val PRICE_UNIT_GRAM_INDEX = 0
+        const val PRICE_UNIT_VORI_INDEX = 1
+        const val PRICE_UNIT_GRAM_TEXT = "প্রতি গ্রাম(Per Gram)"
+        const val PRICE_UNIT_VORI_TEXT = "প্রতি ভরি(Per Bhori)"
+
+
+
     }
 
 }
