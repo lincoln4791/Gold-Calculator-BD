@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -12,14 +11,19 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.lincoln4791.dailyexpensemanager.admobAdsUpdated.InterstistialAdHelper
-import com.lincoln4791.dailyexpensemanager.common.util.CurrentDate
 import com.lincoln4791.goldcalculatorbd.*
+import com.lincoln4791.goldcalculatorbd.activities.GoldBuyPrice.Companion.WEIGHT_CHOOSER_UNIT_GRAM_INDEX
+import com.lincoln4791.goldcalculatorbd.activities.GoldBuyPrice.Companion.WEIGHT_CHOOSER_UNIT_GRAM_TEXT
+import com.lincoln4791.goldcalculatorbd.activities.GoldBuyPrice.Companion.WEIGHT_CHOOSER_UNIT_SEPARATELY_INDEX
+import com.lincoln4791.goldcalculatorbd.activities.GoldBuyPrice.Companion.WEIGHT_CHOOSER_UNIT_SEPARATELY_TEXT
+import com.lincoln4791.goldcalculatorbd.activities.GoldBuyPrice.Companion.WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX
+import com.lincoln4791.goldcalculatorbd.activities.GoldBuyPrice.Companion.WEIGHT_CHOOSER_UNIT_TOGETHER_TEXT
 import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.AdMobUtil
-import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.AdUnitIds
 import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.BannerAddHelper
 import com.lincoln4791.goldcalculatorbd.databinding.ActivityGoldSellPriceBinding
 import kotlin.math.roundToInt
@@ -40,6 +44,9 @@ class GoldSellPrice : AppCompatActivity() {
     private var roti = 0
     private var point = 0
 
+    private var weightChooserUnitText = GoldBuyPrice.Companion.WEIGHT_CHOOSER_UNIT_GRAM_TEXT
+    private var weightChooserUnitIndex = GoldBuyPrice.Companion.WEIGHT_CHOOSER_UNIT_GRAM_INDEX
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         prefManager = PrefManager(this)
@@ -49,7 +56,8 @@ class GoldSellPrice : AppCompatActivity() {
         Utils.changeNavBarColor(this,this)
         enableBackButton()
         initAdMob()
-        initSpinner()
+        initPriceChooserSpinner()
+        initUnitChooserSpinner()
         initcutPercentSpinner()
 
         binding.cvGoldWeight.setOnClickListener {
@@ -79,7 +87,7 @@ class GoldSellPrice : AppCompatActivity() {
         }
     }
 
-    private fun initSpinner() {
+    private fun initPriceChooserSpinner() {
         val spinnerArray = arrayListOf("প্রতি ভরি(Per Bhori)","প্রতি গ্রাম(Per Gram)")
         val spinnerAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this@GoldSellPrice,
             android.R.layout.simple_spinner_dropdown_item,
@@ -325,6 +333,74 @@ class GoldSellPrice : AppCompatActivity() {
         }
     }
 
+    private fun initUnitChooserSpinner() {
+        val spinnerArray = arrayListOf(
+            WEIGHT_CHOOSER_UNIT_GRAM_TEXT,
+            WEIGHT_CHOOSER_UNIT_TOGETHER_TEXT,
+            WEIGHT_CHOOSER_UNIT_SEPARATELY_TEXT
+        )
+        val spinnerAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            this@GoldSellPrice,
+            R.layout.custom_spinner_item,
+            spinnerArray
+        )
+        val spinnerIndex: Int
+        when (weightChooserUnitText) {
+            WEIGHT_CHOOSER_UNIT_GRAM_TEXT -> {
+                spinnerIndex = WEIGHT_CHOOSER_UNIT_GRAM_INDEX
+            }
+
+            WEIGHT_CHOOSER_UNIT_TOGETHER_TEXT -> {
+                spinnerIndex = WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX
+            }
+
+            WEIGHT_CHOOSER_UNIT_SEPARATELY_TEXT -> {
+                spinnerIndex = WEIGHT_CHOOSER_UNIT_SEPARATELY_INDEX
+            }
+
+            else -> {
+                spinnerIndex = WEIGHT_CHOOSER_UNIT_GRAM_INDEX
+            }
+        }
+        binding.spinnerWeightUnitChooser.adapter = spinnerAdapter
+        binding.spinnerWeightUnitChooser.setSelection(spinnerIndex)
+        binding.spinnerWeightUnitChooser.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View,
+                    position: Int,
+                    id: Long,
+                ) {
+                    when (position) {
+                        0 -> {
+                            weightChooserUnitText = WEIGHT_CHOOSER_UNIT_GRAM_TEXT
+                            weightChooserUnitIndex = WEIGHT_CHOOSER_UNIT_GRAM_INDEX
+                            //refreshAllValues()
+                        }
+
+                        1 -> {
+                            weightChooserUnitText = WEIGHT_CHOOSER_UNIT_TOGETHER_TEXT
+                            weightChooserUnitIndex = WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX
+                            //refreshAllValues()
+                        }
+
+                        2 -> {
+                            weightChooserUnitText = WEIGHT_CHOOSER_UNIT_SEPARATELY_TEXT
+                            weightChooserUnitIndex = WEIGHT_CHOOSER_UNIT_SEPARATELY_INDEX
+                            //refreshAllValues()
+                        }
+
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    weightChooserUnitText = GoldBuyPrice.WEIGHT_CHOOSER_UNIT_GRAM_TEXT
+                    weightChooserUnitIndex = GoldBuyPrice.WEIGHT_CHOOSER_UNIT_GRAM_INDEX
+                }
+            }
+    }
+
     private fun showVoriWeightDialog(){
         val dialog = Dialog(this)
         val dView = layoutInflater.inflate(R.layout.layout_gold_weight_vori,null,false)
@@ -362,9 +438,6 @@ class GoldSellPrice : AppCompatActivity() {
                 binding.tvGoldWeight.text="$vori ভরি,$ana আনা,$roti রতি,$point পয়েন্ট"
             }
         }
-
-
-
     }
 
     private fun showGramWeightDialog(){
@@ -484,7 +557,6 @@ class GoldSellPrice : AppCompatActivity() {
             }
         }
     }
-
 
     private fun showInterAd() {
         if (isAdLoaded) {

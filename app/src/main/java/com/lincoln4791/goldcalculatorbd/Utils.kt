@@ -19,6 +19,9 @@ import com.lincoln4791.goldcalculatorbd.common.WeightUnitEnum
 
 object Utils {
 
+    const val TAX_RATE = .05;
+    const val MAKING_CHARGE_RATE = .06;
+
     fun getBanglaDigitFromEnglishDigit(value: String): String {
         //val valu = "12345"
         var valu2 = ""
@@ -102,7 +105,7 @@ object Utils {
 
     fun showVoriWeightDialogForIndividualCalc(
         context: Context,
-        cb: (amount: Int, unit: String) -> Unit
+        cb: (amount: Double, unit: String) -> Unit
     ) {
         val dialog = Dialog(context)
         val dView = LayoutInflater.from(context)
@@ -301,7 +304,7 @@ object Utils {
                 }
                 Log.d("tag", "Selected Amount -> $selectedAmount :: Selected Unit -> $selectedUnit")
                 dialog.dismiss()
-                cb(selectedAmount!!.toInt(), selectedUnit!!)
+                cb(selectedAmount!!, selectedUnit!!)
             } else {
                 Toast.makeText(context, "Invalid Input", Toast.LENGTH_SHORT).show()
             }
@@ -343,8 +346,26 @@ object Utils {
         return getRoundedDigit((point*0.0228),3)
     }
 
+
+    fun getPriceInVoriFromPriceInGram(priceInGram : Double) : Double{
+        return  getRoundedDigit(priceInGram*11.664,3)
+    }
+    fun getPriceInGramFromPriceInVori(priceInVori : Double) : Double{
+        return  getRoundedDigit(priceInVori/11.664,3)
+    }
+
     fun getRoundedDigit(number : Double, digit : Int?=3) : Double{
         return String.format("%.${digit}f", number).toDouble()
     }
+
+    fun getPriceWithTax(amount:Double,taxRate : Double?=TAX_RATE):Double{
+        return getRoundedDigit(amount+(amount*taxRate!!),3)
+    }
+
+    fun getPriceWithMakingCharge(amount:Double,makingChargeRate : Double?=MAKING_CHARGE_RATE):Double{
+        return getRoundedDigit(amount+(amount*makingChargeRate!!),3)
+    }
+
+
 
 }
