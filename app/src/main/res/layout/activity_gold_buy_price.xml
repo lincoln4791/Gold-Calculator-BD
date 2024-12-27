@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             style="@style/tv_common_bold"
             android:textStyle="bold"
-            android:text="স্বর্ণের ওজন(Gold Weight)" />
+            android:hint="স্বর্ণের ওজন(Gold Weight)" />
 
     </com.google.android.material.card.MaterialCardView>
 

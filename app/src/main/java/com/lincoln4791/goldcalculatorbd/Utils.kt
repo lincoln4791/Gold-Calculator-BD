@@ -22,11 +22,11 @@ object Utils {
     const val TAX_RATE = .05;
     const val MAKING_CHARGE_RATE = .06;
 
-    fun getBanglaDigitFromEnglishDigit(value: String): String {
+    fun getBanglaDigitFromEnglishDigit(value: Int): String {
         //val valu = "12345"
         var valu2 = ""
 
-        for (element in value) {
+        for (element in value.toString()) {
             if (element == '0') {
                 valu2 = valu2 + '০'
             } else if (element == '1') {
@@ -55,11 +55,11 @@ object Utils {
 
     }
 
-    fun putCommaInNumber(value: String): String {
+    fun putCommaInNumber(value: Int): String {
         var flag = false
         var count = 0
         var count2 = 0
-        val num = value.reversed()
+        val num = value.toString().reversed()
         var num2 = ""
 
         for (element in num) {

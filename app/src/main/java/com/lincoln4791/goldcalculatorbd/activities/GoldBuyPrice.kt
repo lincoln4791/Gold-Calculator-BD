@@ -17,6 +17,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.lincoln4791.dailyexpensemanager.admobAdsUpdated.InterstistialAdHelper
 import com.lincoln4791.goldcalculatorbd.*
+import com.lincoln4791.goldcalculatorbd.Utils.putCommaInNumber
 import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.AdMobUtil
 import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.BannerAddHelper
 import com.lincoln4791.goldcalculatorbd.common.PriceUnitEnum
@@ -56,7 +57,7 @@ class GoldBuyPrice : AppCompatActivity() {
         initAdMob()
 
         binding.cvGoldWeight.setOnClickListener {
-
+                binding.tvGoldWeight.error=null
             if (weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_GRAM_INDEX) {
                 showGramWeightDialog()
             } else if (weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX) {
@@ -65,31 +66,7 @@ class GoldBuyPrice : AppCompatActivity() {
                 Utils.showVoriWeightDialogForIndividualCalc(this@GoldBuyPrice) { amount, unit ->
                     separateCalcQty=amount
                     separateCalcWeightUnit=unit
-                    var amountUnitE = ""
-                    var amountUnitB = ""
-                    if(unit==WeightUnitEnum.GRAM.name){
-                        amountUnitE= "Gram"
-                        amountUnitE= "গ্রাম"
-                    }
-                    else if(unit==WeightUnitEnum.VORI.name){
-                        amountUnitE= "Vori"
-                        amountUnitE= "ভরি"
-                    }
-
-                    if(unit==WeightUnitEnum.ANA.name){
-                        amountUnitE= "Ana"
-                        amountUnitE= "আনা"
-                    }
-
-                    if(unit==WeightUnitEnum.ROTI.name){
-                        amountUnitE= "Roti"
-                        amountUnitE= "রটি"
-                    }
-                    if(unit==WeightUnitEnum.POINT.name){
-                        amountUnitE= "Point"
-                        amountUnitE= "পয়েন্ট"
-                    }
-                    binding.tvGoldWeight.text = "$amount $amountUnitB"
+                    binding.tvGoldWeight.text = "$amount ${WeightUnitEnum.getValueBFromName(unit)}"
                 }
             }
 
@@ -201,19 +178,19 @@ class GoldBuyPrice : AppCompatActivity() {
                         0 -> {
                             weightChooserUnitText = WEIGHT_CHOOSER_UNIT_GRAM_TEXT
                             weightChooserUnitIndex = WEIGHT_CHOOSER_UNIT_GRAM_INDEX
-                            //refreshAllValues()
+                            refreshAllValues()
                         }
 
                         1 -> {
                             weightChooserUnitText = WEIGHT_CHOOSER_UNIT_TOGETHER_TEXT
                             weightChooserUnitIndex = WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX
-                            //refreshAllValues()
+                            refreshAllValues()
                         }
 
                         2 -> {
                             weightChooserUnitText = WEIGHT_CHOOSER_UNIT_SEPARATELY_TEXT
                             weightChooserUnitIndex = WEIGHT_CHOOSER_UNIT_SEPARATELY_INDEX
-                            //refreshAllValues()
+                            refreshAllValues()
                         }
 
                     }
@@ -305,19 +282,19 @@ class GoldBuyPrice : AppCompatActivity() {
             vori.toDouble() + (ana / 16.0) + (roti / 96.0) + (point / 960)
         val totalPrice = totalVori * calculatablePrice
         val totalPriceWithTax = Utils.getPriceWithTax(totalVori * calculatablePrice)
-        val tPriceInBangla = Utils.getBanglaDigitFromEnglishDigit(totalPrice.roundToInt().toString())
-        val tPriceWithTaxInBangla = Utils.getBanglaDigitFromEnglishDigit(totalPriceWithTax.roundToInt().toString())
+        val tPriceInBangla = Utils.getBanglaDigitFromEnglishDigit(totalPrice.roundToInt())
+        val tPriceWithTaxInBangla = Utils.getBanglaDigitFromEnglishDigit(totalPriceWithTax.roundToInt())
         val tPriceWithMakingCharge = Utils.getPriceWithMakingCharge(totalPriceWithTax)
-        val tPWithMakingChargeBangla = Utils.getBanglaDigitFromEnglishDigit(tPriceWithMakingCharge.toString())
+        val tPWithMakingChargeBangla = Utils.getBanglaDigitFromEnglishDigit(tPriceWithMakingCharge.roundToInt())
 
         binding.tvFinalGoldPrice.text =
             "প্রতি ${priceTitleB} স্বর্ণের দাম $price টাকা দরে $vori ভরি,$ana আনা,$roti রতি,$point পয়েন্ট স্বর্ণের " +
-                    "দাম: ${Utils.putCommaInNumber(tPriceInBangla)} টাকা।\n" +
-                    "${(Utils.TAX_RATE*100)}% ট্যাক্স সহ: ${Utils.putCommaInNumber(tPriceWithTaxInBangla)} টাকা\n" +
-                    "${(Utils.MAKING_CHARGE_RATE*100)}% মেকং চার্জ সহ: ${Utils.putCommaInNumber(tPWithMakingChargeBangla)} টাকা\n\n"+
-                    "Considering $price per ${priceTitleE} price, $vori Bhori, $ana Ana, $roti Roti and $point Point gold price: ${totalPrice.roundToInt()} BDT\n" +
-                    "Including ${(Utils.TAX_RATE*100)}% tax: ${totalPriceWithTax.roundToInt()} BDT"+
-                    "Including ${Utils.MAKING_CHARGE_RATE*100}% making charge: ${tPriceWithMakingCharge.roundToInt()} BDT"
+                    "দাম: ${Utils.putCommaInNumber(tPriceInBangla.toInt())} টাকা।\n" +
+                    "${(Utils.TAX_RATE*100)}% ট্যাক্স সহ: ${Utils.putCommaInNumber(tPriceWithTaxInBangla.toInt())} টাকা\n" +
+                    "${(Utils.MAKING_CHARGE_RATE*100)}% মেকং চার্জ সহ: ${Utils.putCommaInNumber(tPWithMakingChargeBangla.toInt())} টাকা\n\n"+
+                    "Considering $price per ${priceTitleE} price, $vori Bhori, $ana Ana, $roti Roti and $point Point gold price: ${putCommaInNumber(totalPrice.roundToInt())} BDT\n" +
+                    "Including ${(Utils.TAX_RATE*100)}% tax: ${putCommaInNumber(totalPriceWithTax.roundToInt())} BDT"+
+                    "Including ${Utils.MAKING_CHARGE_RATE*100}% making charge: ${putCommaInNumber(tPriceWithMakingCharge.roundToInt())} BDT"
     }
 
     private fun calculatePriceWeightGram(gram: Double, price: Double, priceUnit: String) {
@@ -331,17 +308,17 @@ class GoldBuyPrice : AppCompatActivity() {
         val totalPrice = gram * calculatedPrice
         val totalPriceWithTax = Utils.getPriceWithTax(totalPrice)
         val totalPriceWithMakingCharge = Utils.getPriceWithMakingCharge(totalPriceWithTax)
-        val tPriceInBangla = Utils.getBanglaDigitFromEnglishDigit(totalPrice.roundToInt().toString())
-        val tPriceInBanglaWithTax = Utils.getBanglaDigitFromEnglishDigit(totalPriceWithTax.roundToInt().toString())
-        val tPriceInBanglaWithMakingCharge = Utils.getBanglaDigitFromEnglishDigit(totalPriceWithMakingCharge.roundToInt().toString())
+        val tPriceInBangla = Utils.getBanglaDigitFromEnglishDigit(totalPrice.roundToInt())
+        val tPriceInBanglaWithTax = Utils.getBanglaDigitFromEnglishDigit(totalPriceWithTax.roundToInt())
+        val tPriceInBanglaWithMakingCharge = Utils.getBanglaDigitFromEnglishDigit(totalPriceWithMakingCharge.roundToInt())
 
         binding.tvFinalGoldPrice.text =
-            "প্রতি ${PriceUnitEnum.getValueBFromName(priceUnit)} স্বর্ণের দাম $price টাকা দরে $gram গ্রাম স্বর্ণের দাম: ${Utils.putCommaInNumber(tPriceInBangla)} টাকা।\n" +
-                    "${Utils.TAX_RATE*100}% ট্যাক্স সহ : ${Utils.putCommaInNumber(tPriceInBanglaWithTax)} টাকা\n" +
-                    "${Utils.MAKING_CHARGE_RATE*100}% মেকিং চার্জ সহ : ${Utils.putCommaInNumber(tPriceInBanglaWithMakingCharge)} টাকা\n\n" +
-                    "Considering $price per ${PriceUnitEnum.getValueEFromName(priceUnit)} price, $gram gram gold price: ${totalPrice.roundToInt()} BDT" +
-                    "\nIncluding ${Utils.TAX_RATE*100}% tax: ${totalPriceWithTax.roundToInt()} BDT"+
-                    "\nIncluding ${Utils.MAKING_CHARGE_RATE*100}% making charge: ${totalPriceWithMakingCharge.roundToInt()} BDT"
+            "প্রতি ${PriceUnitEnum.getValueBFromName(priceUnit)} স্বর্ণের দাম $price টাকা দরে $gram গ্রাম স্বর্ণের দাম: ${Utils.putCommaInNumber(tPriceInBangla.toInt())} টাকা।\n" +
+                    "${Utils.TAX_RATE*100}% ট্যাক্স সহ : ${Utils.putCommaInNumber(tPriceInBanglaWithTax.toInt())} টাকা\n" +
+                    "${Utils.MAKING_CHARGE_RATE*100}% মেকিং চার্জ সহ : ${Utils.putCommaInNumber(tPriceInBanglaWithMakingCharge.toInt())} টাকা\n\n" +
+                    "Considering $price per ${PriceUnitEnum.getValueEFromName(priceUnit)} price, $gram gram gold price: ${putCommaInNumber(totalPrice.roundToInt())} BDT" +
+                    "\nIncluding ${Utils.TAX_RATE*100}% tax: ${putCommaInNumber(totalPriceWithTax.roundToInt())} BDT"+
+                    "\nIncluding ${Utils.MAKING_CHARGE_RATE*100}% making charge: ${putCommaInNumber(totalPriceWithMakingCharge.roundToInt())} BDT"
     }
 
     private fun calculatePriceSeparately(
@@ -371,18 +348,18 @@ class GoldBuyPrice : AppCompatActivity() {
 
         val tPriceWithTax = Utils.getPriceWithTax(tPrice)
         val tPriceWithMakingCharge = Utils.getPriceWithMakingCharge(tPriceWithTax)
-        var tPriceBangla = Utils.getBanglaDigitFromEnglishDigit(tPrice.roundToInt().toString())
-        var tPriceBanglaWithTax = Utils.getBanglaDigitFromEnglishDigit(tPriceWithTax.roundToInt().toString())
-        var tPriceBanglaWithMakingCharge = Utils.getBanglaDigitFromEnglishDigit(tPriceWithMakingCharge.roundToInt().toString())
+        var tPriceBangla = Utils.getBanglaDigitFromEnglishDigit(tPrice.roundToInt())
+        var tPriceBanglaWithTax = Utils.getBanglaDigitFromEnglishDigit(tPriceWithTax.roundToInt())
+        var tPriceBanglaWithMakingCharge = Utils.getBanglaDigitFromEnglishDigit(tPriceWithMakingCharge.roundToInt())
 
         Log.d("tag", "price $tPrice :: quantity -> $weightQty")
         binding.tvFinalGoldPrice.text =
-            "প্রতি ${PriceUnitEnum.getValueBFromName(priceUnit)} স্বর্ণের দাম $price টাকা দরে ${WeightUnitEnum.getValueBFromName(weightUnit)} স্বর্ণের দাম: ${Utils.putCommaInNumber(tPriceBangla)} টাকা।\n" +
-                    "${Utils.TAX_RATE*100}% ট্যাক্স সহ: ${Utils.putCommaInNumber(tPriceBanglaWithTax)} টাকা\n"+
-                    "${Utils.MAKING_CHARGE_RATE*100}% মেকিং চার্জ সহ: ${Utils.putCommaInNumber(tPriceBanglaWithMakingCharge)} টাকা\n\n"+
-                    "Considering $price per ${PriceUnitEnum.getValueEFromName(priceUnit)} price, $weightQty ${WeightUnitEnum.getValueEFromName(priceUnit)} gold price: ${tPrice.roundToInt()} BDT\n" +
-                    "Including ${Utils.TAX_RATE*100}% tax : ${tPriceWithTax.roundToInt()} BDT\n"+
-                    "Including ${Utils.MAKING_CHARGE_RATE*100}% making charge : ${tPriceWithMakingCharge.roundToInt()} BDT"
+            "প্রতি ${PriceUnitEnum.getValueBFromName(priceUnit)} স্বর্ণের দাম $price টাকা দরে $weightQty ${WeightUnitEnum.getValueBFromName(weightUnit)} স্বর্ণের দাম: ${Utils.putCommaInNumber(tPriceBangla.toInt())} টাকা।\n" +
+                    "${Utils.TAX_RATE*100}% ট্যাক্স সহ: ${Utils.putCommaInNumber(tPriceBanglaWithTax.toInt())} টাকা\n"+
+                    "${Utils.MAKING_CHARGE_RATE*100}% মেকিং চার্জ সহ: ${Utils.putCommaInNumber(tPriceBanglaWithMakingCharge.toInt())} টাকা\n\n"+
+                    "Considering $price per ${PriceUnitEnum.getValueEFromName(priceUnit)} price, $weightQty ${WeightUnitEnum.getValueEFromName(priceUnit)} gold price: ${putCommaInNumber(tPrice.roundToInt())} BDT\n" +
+                    "Including ${Utils.TAX_RATE*100}% tax : ${putCommaInNumber(tPriceWithTax.roundToInt())} BDT\n"+
+                    "Including ${Utils.MAKING_CHARGE_RATE*100}% making charge : ${putCommaInNumber(tPriceWithMakingCharge.roundToInt())} BDT"
 
     }
 
@@ -392,8 +369,9 @@ class GoldBuyPrice : AppCompatActivity() {
         ana = 0
         roti = 0
         point = 0
-        binding.etUnitPrice.setText("")
-        binding.tvGoldWeight.text = "স্বর্ণের ওজন(Gold Weight)"
+        separateCalcQty = 0.0
+        //binding.etUnitPrice.setText("")
+        binding.tvGoldWeight.text = ""
         binding.tvFinalGoldPrice.text = "ফলাফল(Result)"
     }
 

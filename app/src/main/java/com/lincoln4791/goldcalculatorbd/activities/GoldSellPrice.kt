@@ -68,6 +68,7 @@ class GoldSellPrice : AppCompatActivity() {
         initcutPercentSpinner()
 
         binding.cvGoldWeight.setOnClickListener {
+            binding.tvGoldWeight.error=null
 
             if (weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_GRAM_INDEX) {
                 showGramWeightDialog()
@@ -77,42 +78,21 @@ class GoldSellPrice : AppCompatActivity() {
                 Utils.showVoriWeightDialogForIndividualCalc(this@GoldSellPrice) { amount, unit ->
                     separateCalcQty=amount
                     separateCalcWeightUnit=unit
-                    var amountUnitE = ""
-                    var amountUnitB = ""
-                    if(unit==WeightUnitEnum.GRAM.name){
-                        amountUnitE= "Gram"
-                        amountUnitE= "গ্রাম"
-                    }
-                    else if(unit==WeightUnitEnum.VORI.name){
-                        amountUnitE= "Vori"
-                        amountUnitE= "ভরি"
-                    }
 
-                    if(unit==WeightUnitEnum.ANA.name){
-                        amountUnitE= "Ana"
-                        amountUnitE= "আনা"
-                    }
-
-                    if(unit==WeightUnitEnum.ROTI.name){
-                        amountUnitE= "Roti"
-                        amountUnitE= "রটি"
-                    }
-                    if(unit==WeightUnitEnum.POINT.name){
-                        amountUnitE= "Point"
-                        amountUnitE= "পয়েন্ট"
-                    }
-                    binding.tvGoldWeight.text = "$amount $amountUnitB"
+                    binding.tvGoldWeight.text = "$amount ${WeightUnitEnum.getValueBFromName(unit)}"
                 }
             }
 
         }
 
         binding.cvCalculate.setOnClickListener {
-            if(binding.etUnitPrice.text.isEmpty()){
+            if(binding.etUnitPrice.text.toString().isEmpty()){
                 binding.etUnitPrice.error="স্বর্ণের দাম(Price of Gold)"
+                return@setOnClickListener
             }
-            else if (binding.tvGoldWeight.text.isEmpty()){
+            else if (binding.tvGoldWeight.text.toString().isEmpty()){
                 binding.tvGoldWeight.error="স্বর্ণের ওজন(Weight of Gold)"
+                return@setOnClickListener
             }
             else{
                 showInterAd()
@@ -415,27 +395,27 @@ class GoldSellPrice : AppCompatActivity() {
                         0 -> {
                             weightChooserUnitText = WEIGHT_CHOOSER_UNIT_GRAM_TEXT
                             weightChooserUnitIndex = WEIGHT_CHOOSER_UNIT_GRAM_INDEX
-                            //refreshAllValues()
+                            refreshAllValues()
                         }
 
                         1 -> {
                             weightChooserUnitText = WEIGHT_CHOOSER_UNIT_TOGETHER_TEXT
                             weightChooserUnitIndex = WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX
-                            //refreshAllValues()
+                            refreshAllValues()
                         }
 
                         2 -> {
                             weightChooserUnitText = WEIGHT_CHOOSER_UNIT_SEPARATELY_TEXT
                             weightChooserUnitIndex = WEIGHT_CHOOSER_UNIT_SEPARATELY_INDEX
-                            //refreshAllValues()
+                            refreshAllValues()
                         }
 
                     }
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
-                    weightChooserUnitText = GoldBuyPrice.WEIGHT_CHOOSER_UNIT_GRAM_TEXT
-                    weightChooserUnitIndex = GoldBuyPrice.WEIGHT_CHOOSER_UNIT_GRAM_INDEX
+                    weightChooserUnitText = WEIGHT_CHOOSER_UNIT_GRAM_TEXT
+                    weightChooserUnitIndex = WEIGHT_CHOOSER_UNIT_GRAM_INDEX
                 }
             }
     }
@@ -508,9 +488,9 @@ class GoldSellPrice : AppCompatActivity() {
         val totalSellingPrice  = ((totalPrice*((100-cutPercentValue)))/100).roundToInt()
         Log.d("tag","price ${totalPrice} :: quantity -> $totalVori")
 
-        val tPriceInBangla = Utils.getBanglaDigitFromEnglishDigit(totalSellingPrice.toString())
+        val tPriceInBangla = Utils.getBanglaDigitFromEnglishDigit(totalSellingPrice)
 
-        binding.tvFinalGoldPrice.text = "প্রতি ভরি স্বর্ণের দাম $pricePerVori টাকা দরে $vori ভরি,$ana আনা,$roti রতি,$point পয়েন্ট স্বর্ণের বিক্রয় মূল্য \n${Utils.putCommaInNumber(tPriceInBangla)} টাকা।\n\nConsidering $pricePerVori per Bhori price, $vori Bhori, $ana Ana, $roti Roti and $point Point gold selling price is $totalSellingPrice BDT"
+        binding.tvFinalGoldPrice.text = "প্রতি ভরি স্বর্ণের দাম $pricePerVori টাকা দরে $vori ভরি,$ana আনা,$roti রতি,$point পয়েন্ট স্বর্ণের বিক্রয় মূল্য \n${Utils.putCommaInNumber(tPriceInBangla.toInt())} টাকা।\n\nConsidering $pricePerVori per Bhori price, $vori Bhori, $ana Ana, $roti Roti and $point Point gold selling price is $totalSellingPrice BDT"
     }
 
     private fun calculatePriceGram(gram:Double, pricePerGram : Double) {
@@ -519,10 +499,10 @@ class GoldSellPrice : AppCompatActivity() {
         val totalSellingPrice  = (totalPrice*(100-cutPercentValue))/100
         Log.d("tag","price $totalPrice :: quantity -> $totalGram Gram")
 
-        val tPriceInBangla = Utils.getBanglaDigitFromEnglishDigit(totalSellingPrice.roundToInt().toString())
+        val tPriceInBangla = Utils.getBanglaDigitFromEnglishDigit(totalSellingPrice.roundToInt())
         //val tPriceInBanglaWithTax = Utils.getBanglaDigitFromEnglishDigit(totalSellingPrice.roundToInt().toString())
 
-        binding.tvFinalGoldPrice.text = "প্রতি গ্রাম স্বর্ণের দাম $pricePerGram টাকা দরে $gram গ্রাম স্বর্ণের বিক্রয় মূল্য\n${Utils.putCommaInNumber(tPriceInBangla)} টাকা।\n\nConsidering $pricePerGram per Gram price, $gram gram gold Selling price is ${totalPrice.roundToInt()}"
+        binding.tvFinalGoldPrice.text = "প্রতি গ্রাম স্বর্ণের দাম $pricePerGram টাকা দরে $gram গ্রাম স্বর্ণের বিক্রয় মূল্য\n${Utils.putCommaInNumber(tPriceInBangla.toInt())} টাকা।\n\nConsidering $pricePerGram per Gram price, $gram gram gold Selling price is ${totalPrice.roundToInt()}"
     }
 
     private fun refreshAllValues(){
@@ -531,8 +511,9 @@ class GoldSellPrice : AppCompatActivity() {
         ana = 0
         roti = 0
         point = 0
-        binding.etUnitPrice.setText("")
-        binding.tvGoldWeight.text = "স্বর্ণের ওজন(Gold Weight)"
+        separateCalcQty = 0.0
+        //binding.etUnitPrice.setText("")
+        binding.tvGoldWeight.text = ""
         binding.tvFinalGoldPrice.text = "ফলাফল(Result)"
     }
 
@@ -618,13 +599,6 @@ class GoldSellPrice : AppCompatActivity() {
     }
 
    private fun initCalculation(){
-        /*if(priceUnitIndex==0){
-            calculatePriceVori(vori,ana,roti,point,binding.etUnitPrice.text.toString().toInt())
-        }
-        else if (priceUnitIndex==1){
-            calculatePriceGram(gram,binding.etUnitPrice.text.toString().toDouble())
-        }*/
-
        if (priceUnitIndex == PRICE_UNIT_GRAM_INDEX) {
            if (weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_GRAM_INDEX) {
                calculatePriceWeightGram(
@@ -648,7 +622,8 @@ class GoldSellPrice : AppCompatActivity() {
                    gram, binding.etUnitPrice.text.toString().toDouble(),
                    PriceUnitEnum.VORI.name
                )
-           } else if (weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX) {
+           }
+           else if (weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX) {
                calculatePriceVoriTogether(
                    vori,
                    ana,
@@ -684,12 +659,12 @@ class GoldSellPrice : AppCompatActivity() {
         val totalVori: kotlin.Double =
             vori.toDouble() + (ana / 16.0) + (roti / 96.0) + (point / 960)
         val totalPrice = (totalVori * calculatablePrice)*((100-cutPercentValue)/100.0)
-        val tPriceInBangla = Utils.getBanglaDigitFromEnglishDigit(totalPrice.roundToInt().toString())
+        val tPriceInBangla = Utils.getBanglaDigitFromEnglishDigit(totalPrice.roundToInt())
 
         binding.tvFinalGoldPrice.text =
             "প্রতি ${priceTitleB} স্বর্ণের দাম $price টাকা দরে $vori ভরি,$ana আনা,$roti রতি,$point পয়েন্ট স্বর্ণের " +
-                    "বিক্রয় মূল্য (${cutPercentValue}% টাকা কাটার পর): ${Utils.putCommaInNumber(tPriceInBangla)} টাকা।\n" +
-                    "Considering $price per ${priceTitleE} price, $vori Bhori, $ana Ana, $roti Roti and $point Point gold selling price(after ${cutPercentValue}% reduction): ${totalPrice.roundToInt()} BDT\n"
+                    "বিক্রয় মূল্য (${cutPercentValue}% টাকা কাটার পর): ${Utils.putCommaInNumber(tPriceInBangla.toInt())} টাকা।\n" +
+                    "Considering $price per ${priceTitleE} price, $vori Bhori, $ana Ana, $roti Roti and $point Point gold selling price(after ${cutPercentValue}% reduction): ${Utils.putCommaInNumber(totalPrice.roundToInt())} BDT\n"
     }
 
     private fun calculatePriceWeightGram(gram: Double, price: Double, priceUnit: String) {
@@ -701,11 +676,11 @@ class GoldSellPrice : AppCompatActivity() {
 
         //val totalGram: kotlin.Double = vori.toDouble() + (ana / 16.0) + (roti / 96.0) + (point / 960)
         val totalPrice = (gram * calculatedPrice)*((100-cutPercentValue)/100.0)
-        val tPriceInBangla = Utils.getBanglaDigitFromEnglishDigit(totalPrice.roundToInt().toString())
+        val tPriceInBangla = Utils.getBanglaDigitFromEnglishDigit(totalPrice.roundToInt())
 
         binding.tvFinalGoldPrice.text =
-            "প্রতি ${PriceUnitEnum.getValueBFromName(priceUnit)} স্বর্ণের দাম $price টাকা দরে $gram গ্রাম স্বর্ণের বিক্রয় মূল্য(${cutPercentValue}% টাকা কাটার পর): ${Utils.putCommaInNumber(tPriceInBangla)} টাকা।\n\n" +
-                    "Considering $price per ${PriceUnitEnum.getValueEFromName(priceUnit)} price, $gram gram gold selling price(after ${cutPercentValue}% reduction): ${totalPrice.roundToInt()} BDT"
+            "প্রতি ${PriceUnitEnum.getValueBFromName(priceUnit)} স্বর্ণের দাম $price টাকা দরে $gram গ্রাম স্বর্ণের বিক্রয় মূল্য(${cutPercentValue}% টাকা কাটার পর): ${Utils.putCommaInNumber(tPriceInBangla.toInt())} টাকা।\n\n" +
+                    "Considering $price per ${PriceUnitEnum.getValueEFromName(priceUnit)} price, $gram gram gold selling price(after ${cutPercentValue}% reduction): ${Utils.putCommaInNumber(totalPrice.roundToInt())} BDT"
     }
 
     private fun calculatePriceSeparately(
@@ -733,13 +708,13 @@ class GoldSellPrice : AppCompatActivity() {
             tPrice = Utils.getRoundedDigit(calculatedPrice * (Utils.getVoriFromPoint(weightQty)),3)
         }
 
-        val tPriceAfterReduction = tPrice*(100-cutPercentValue)/100.0
-        val tPriceAfterReductionBangla = Utils.getBanglaDigitFromEnglishDigit(tPriceAfterReduction.toString())
+        val tPriceAfterReduction = tPrice*((100-cutPercentValue)/100.0)
+        val tPriceAfterReductionBangla = Utils.getBanglaDigitFromEnglishDigit(tPriceAfterReduction.roundToInt())
 
         Log.d("tag", "price $tPrice :: quantity -> $weightQty")
         binding.tvFinalGoldPrice.text =
-            "প্রতি ${PriceUnitEnum.getValueBFromName(priceUnit)} স্বর্ণের দাম $price টাকা দরে ${WeightUnitEnum.getValueBFromName(weightUnit)} স্বর্ণের বিক্রয় মূল্য(${cutPercentValue}% টাকা কাটার পর): ${Utils.putCommaInNumber(tPriceAfterReductionBangla)} টাকা।\n\n" +
-                    "Considering $price per ${PriceUnitEnum.getValueEFromName(priceUnit)} price, $weightQty ${WeightUnitEnum.getValueEFromName(priceUnit)} gold selling price(after ${cutPercentValue}% reduction): ${tPriceAfterReduction.roundToInt()} BDT"
+            "প্রতি ${PriceUnitEnum.getValueBFromName(priceUnit)} স্বর্ণের দাম $price টাকা দরে $weightQty ${WeightUnitEnum.getValueBFromName(weightUnit)} স্বর্ণের বিক্রয় মূল্য(${cutPercentValue}% টাকা কাটার পর): ${Utils.putCommaInNumber(tPriceAfterReductionBangla.toInt())} টাকা।\n\n" +
+                    "Considering $price per ${PriceUnitEnum.getValueEFromName(priceUnit)} price, $weightQty ${WeightUnitEnum.getValueEFromName(priceUnit)} gold selling price(after ${cutPercentValue}% reduction): ${Utils.putCommaInNumber(tPriceAfterReduction.roundToInt())} BDT"
 
 
     }
