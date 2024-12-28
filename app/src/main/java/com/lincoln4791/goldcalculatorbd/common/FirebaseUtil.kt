@@ -29,7 +29,6 @@ object FirebaseUtil {
 
             firebaseRemoteConfig.fetchAndActivate().addOnCompleteListener {
                 if (it.isSuccessful) {
-                    val updated = it.result
                     Log.d(
                         "Remote",
                         "Remote : Before Banner adInterval is : ${prefManager.bannerAdInterval}"
@@ -44,6 +43,8 @@ object FirebaseUtil {
                         firebaseRemoteConfig.getString(Constants.REMOTE_CONFIG_VALUE_FOR_AD_UNIT_ID_INTERSTITIAL)
                     prefManager.adUnitIdRewarded =
                         firebaseRemoteConfig.getString(Constants.REMOTE_CONFIG_VALUE_FOR_AD_UNIT_ID_REWARD)
+                    prefManager.adUnitIdRewardedInterstitial =
+                        firebaseRemoteConfig.getString(Constants.REMOTE_CONFIG_VALUE_FOR_AD_UNIT_ID_REWARD_INTERSTITIAL)
                     prefManager.adUnitIdAppOpen =
                         firebaseRemoteConfig.getString(Constants.REMOTE_CONFIG_VALUE_FOR_AD_UNIT_ID_APPOPEN)
                     Log.d(

@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -12,31 +11,38 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.lincoln4791.dailyexpensemanager.admobAdsUpdated.InterstistialAdHelper
-import com.lincoln4791.dailyexpensemanager.common.util.CurrentDate
 import com.lincoln4791.goldcalculatorbd.*
+import com.lincoln4791.goldcalculatorbd.Utils.putCommaInNumber
 import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.AdMobUtil
-import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.AdUnitIds
 import com.lincoln4791.goldcalculatorbd.admobAdsUpdated.BannerAddHelper
+import com.lincoln4791.goldcalculatorbd.common.PriceUnitEnum
+import com.lincoln4791.goldcalculatorbd.common.WeightUnitEnum
 import com.lincoln4791.goldcalculatorbd.databinding.ActivityGoldBuyPriceBinding
 import kotlin.math.roundToInt
 
 class GoldBuyPrice : AppCompatActivity() {
-    private lateinit var prefManager : PrefManager
+    private lateinit var prefManager: PrefManager
     private lateinit var interAd: InterstistialAdHelper
     private var mInterstitialAd: InterstitialAd? = null
     private var isAdLoaded = false
-    private var unit = "প্রতি ভরি(Per Bhori)"
-    private var unitIndex = 0
-    private lateinit var binding : ActivityGoldBuyPriceBinding
+    private var priceUnit = PRICE_UNIT_GRAM_TEXT
+    private var priceUnitIndex = PRICE_UNIT_GRAM_INDEX
+    private lateinit var binding: ActivityGoldBuyPriceBinding
     private var gram = 0.0
     private var vori = 0
     private var ana = 0
     private var roti = 0
     private var point = 0
+    private var separateCalcQty = 0.0
+    private var separateCalcWeightUnit = WeightUnitEnum.GRAM.name
+
+    private var weightChooserUnitText = WEIGHT_CHOOSER_UNIT_GRAM_TEXT
+    private var weightChooserUnitIndex = WEIGHT_CHOOSER_UNIT_GRAM_INDEX
 
     override fun onCreate(savedInstanceState: Bundle?) {
         prefManager = PrefManager(this)
@@ -44,55 +50,58 @@ class GoldBuyPrice : AppCompatActivity() {
         binding = ActivityGoldBuyPriceBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initInterstitialAd()
-        Utils.changeNavBarColor(this,this)
+        Utils.changeNavBarColor(this, this)
         enableBackButton()
-        initSpinner()
+        initPriceChooserSpinner()
+        initUnitChooserSpinner()
         initAdMob()
 
         binding.cvGoldWeight.setOnClickListener {
-            if(unitIndex==0){
-                showVoriWeightDialog()
-            }
-            else if(unitIndex==1){
+                binding.tvGoldWeight.error=null
+            if (weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_GRAM_INDEX) {
                 showGramWeightDialog()
-            }
-            else{
-
+            } else if (weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX) {
+                showVoriWeightDialog()
+            } else {
+                Utils.showVoriWeightDialogForIndividualCalc(this@GoldBuyPrice) { amount, unit ->
+                    separateCalcQty=amount
+                    separateCalcWeightUnit=unit
+                    binding.tvGoldWeight.text = "$amount ${WeightUnitEnum.getValueBFromName(unit)}"
+                }
             }
 
         }
 
         binding.cvCalculate.setOnClickListener {
-            if(binding.etUnitPrice.text.isEmpty()){
-                binding.etUnitPrice.error="স্বর্ণের দাম(Price of Gold)"
-            }
-            else if (binding.tvGoldWeight.text.isEmpty()){
-                binding.tvGoldWeight.error="স্বর্ণের ওজন(Weight of Gold)"
-            }
-            else{
+            if (binding.etUnitPrice.text.isEmpty()) {
+                binding.etUnitPrice.error = "স্বর্ণের দাম(Price of Gold)"
+            } else if (binding.tvGoldWeight.text.isEmpty()) {
+                binding.tvGoldWeight.error = "স্বর্ণের ওজন(Weight of Gold)"
+            } else {
                 showInterAd()
-
             }
-
         }
-
     }
 
-    private fun initSpinner() {
-        val spinnerArray = arrayListOf("প্রতি ভরি(Per Bhori)","প্রতি গ্রাম(Per Gram)")
-        val spinnerAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this@GoldBuyPrice,
+    private fun initPriceChooserSpinner() {
+        val spinnerArray = arrayListOf(PRICE_UNIT_GRAM_TEXT, PRICE_UNIT_VORI_TEXT)
+        val spinnerAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            this@GoldBuyPrice,
             android.R.layout.simple_spinner_dropdown_item,
-            spinnerArray)
+            spinnerArray
+        )
         val spinnerIndex: Int
-        when (unit) {
-            "প্রতি ভরি" -> {
-                spinnerIndex = 0
+        when (priceUnit) {
+            PRICE_UNIT_VORI_TEXT -> {
+                spinnerIndex = PRICE_UNIT_VORI_INDEX
             }
-            "প্রতি গ্রাম" -> {
-                spinnerIndex = 1
+
+            PRICE_UNIT_GRAM_TEXT -> {
+                spinnerIndex = PRICE_UNIT_GRAM_INDEX
             }
+
             else -> {
-                spinnerIndex=0
+                spinnerIndex = PRICE_UNIT_VORI_INDEX
             }
         }
         binding.spinnerUnit.adapter = spinnerAdapter
@@ -106,28 +115,97 @@ class GoldBuyPrice : AppCompatActivity() {
             ) {
                 when (position) {
                     0 -> {
-                        unit="প্রতি ভরি"
-                        unitIndex=0
-                        refreshAllValues()
-                    }
-                    1 -> {
-                        unit="প্রতি গ্রাম"
-                        unitIndex=1
+                        priceUnit = PRICE_UNIT_GRAM_TEXT
+                        priceUnitIndex = PRICE_UNIT_GRAM_INDEX
                         refreshAllValues()
                     }
 
+                    1 -> {
+                        priceUnit = PRICE_UNIT_VORI_TEXT
+                        priceUnitIndex = PRICE_UNIT_VORI_INDEX
+                        refreshAllValues()
+                    }
                 }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                unit="প্রতি ভরি"
+                priceUnit = PRICE_UNIT_GRAM_TEXT
+                priceUnitIndex = PRICE_UNIT_GRAM_INDEX
             }
         }
     }
 
-    private fun showVoriWeightDialog(){
+    private fun initUnitChooserSpinner() {
+        val spinnerArray = arrayListOf(
+            WEIGHT_CHOOSER_UNIT_GRAM_TEXT,
+            WEIGHT_CHOOSER_UNIT_TOGETHER_TEXT,
+            WEIGHT_CHOOSER_UNIT_SEPARATELY_TEXT
+        )
+        val spinnerAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            this@GoldBuyPrice,
+            R.layout.custom_spinner_item,
+            spinnerArray
+        )
+        val spinnerIndex: Int
+        when (weightChooserUnitText) {
+            WEIGHT_CHOOSER_UNIT_GRAM_TEXT -> {
+                spinnerIndex = WEIGHT_CHOOSER_UNIT_GRAM_INDEX
+            }
+
+            WEIGHT_CHOOSER_UNIT_TOGETHER_TEXT -> {
+                spinnerIndex = WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX
+            }
+
+            WEIGHT_CHOOSER_UNIT_SEPARATELY_TEXT -> {
+                spinnerIndex = WEIGHT_CHOOSER_UNIT_SEPARATELY_INDEX
+            }
+
+            else -> {
+                spinnerIndex = WEIGHT_CHOOSER_UNIT_GRAM_INDEX
+            }
+        }
+        binding.spinnerWeightUnitChooser.adapter = spinnerAdapter
+        binding.spinnerWeightUnitChooser.setSelection(spinnerIndex)
+        binding.spinnerWeightUnitChooser.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View,
+                    position: Int,
+                    id: Long,
+                ) {
+                    when (position) {
+                        0 -> {
+                            weightChooserUnitText = WEIGHT_CHOOSER_UNIT_GRAM_TEXT
+                            weightChooserUnitIndex = WEIGHT_CHOOSER_UNIT_GRAM_INDEX
+                            refreshAllValues()
+                        }
+
+                        1 -> {
+                            weightChooserUnitText = WEIGHT_CHOOSER_UNIT_TOGETHER_TEXT
+                            weightChooserUnitIndex = WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX
+                            refreshAllValues()
+                        }
+
+                        2 -> {
+                            weightChooserUnitText = WEIGHT_CHOOSER_UNIT_SEPARATELY_TEXT
+                            weightChooserUnitIndex = WEIGHT_CHOOSER_UNIT_SEPARATELY_INDEX
+                            refreshAllValues()
+                        }
+
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    weightChooserUnitText = WEIGHT_CHOOSER_UNIT_GRAM_TEXT
+                    weightChooserUnitIndex = WEIGHT_CHOOSER_UNIT_GRAM_INDEX
+                }
+            }
+    }
+
+    private fun showVoriWeightDialog() {
         val dialog = Dialog(this)
-        val dView = layoutInflater.inflate(R.layout.layout_gold_weight_vori,null,false)
+        val dView = layoutInflater.inflate(R.layout.layout_gold_weight_vori, null, false)
         dialog.setContentView(dView)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
@@ -140,36 +218,29 @@ class GoldBuyPrice : AppCompatActivity() {
 
 
         btnCalculate.setOnClickListener {
-             vori = if(etVori.text.toString().isEmpty()) 0 else etVori.text.toString().toInt()
-             ana = if(etAna.text.toString().isEmpty()) 0 else etAna.text.toString().toInt()
-             roti = if(etRoti.text.toString().isEmpty()) 0 else etRoti.text.toString().toInt()
-             point = if(etPoint.text.toString().isEmpty()) 0 else etPoint.text.toString().toInt()
-            if(ana>15){
-                etAna.error="আনা সর্বোচ্চ ১৫ হতে পারবে"
-            }
-
-            else if(roti>5){
-                etRoti.error="রতি সর্বোচ্চ ৫ হতে পারবে"
-            }
-
-            else if(point>9){
-                etPoint.error="পয়েন্ট সর্বোচ্চ ৯ হতে পারবে"
-            }
-
-            else{
+            vori = if (etVori.text.toString().isEmpty()) 0 else etVori.text.toString().toInt()
+            ana = if (etAna.text.toString().isEmpty()) 0 else etAna.text.toString().toInt()
+            roti = if (etRoti.text.toString().isEmpty()) 0 else etRoti.text.toString().toInt()
+            point = if (etPoint.text.toString().isEmpty()) 0 else etPoint.text.toString().toInt()
+            if (ana > 15) {
+                etAna.error = "আনা সর্বোচ্চ ১৫ হতে পারবে"
+            } else if (roti > 5) {
+                etRoti.error = "রতি সর্বোচ্চ ৫ হতে পারবে"
+            } else if (point > 9) {
+                etPoint.error = "পয়েন্ট সর্বোচ্চ ৯ হতে পারবে"
+            } else {
                 dialog.dismiss()
-                Log.d("tag","$vori , $ana, $roti, $point")
-               binding.tvGoldWeight.text="$vori ভরি,$ana আনা,$roti রতি,$point পয়েন্ট"
+                Log.d("tag", "$vori , $ana, $roti, $point")
+                binding.tvGoldWeight.text = "$vori ভরি,$ana আনা,$roti রতি,$point পয়েন্ট"
             }
         }
 
 
-
     }
 
-    private fun showGramWeightDialog(){
+    private fun showGramWeightDialog() {
         val dialog = Dialog(this)
-        val dView = layoutInflater.inflate(R.layout.layout_gold_weight_gram,null,false)
+        val dView = layoutInflater.inflate(R.layout.layout_gold_weight_gram, null, false)
         dialog.setContentView(dView)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
@@ -179,73 +250,154 @@ class GoldBuyPrice : AppCompatActivity() {
 
 
         btnCalculate.setOnClickListener {
-            gram = if(etVori.text.toString().isEmpty()) 0.0 else etVori.text.toString().toDouble()
+            gram = if (etVori.text.toString().isEmpty()) 0.0 else etVori.text.toString().toDouble()
             dialog.dismiss()
-            Log.d("tag","$gram Gram")
-            binding.tvGoldWeight.text="$gram গ্রাম(Gram)"
+            Log.d("tag", "$gram Gram")
+            binding.tvGoldWeight.text = "$gram গ্রাম(Gram)"
 
         }
 
     }
 
-    private fun calculatePriceVori(vori:Int, ana:Int, roti:Int, point:Int, pricePerVori : Int) {
-        val totalVori : kotlin.Double  = vori.toDouble()+(ana/16.0)+(roti/96.0)+(point/960)
-        val totalPrice  = totalVori*pricePerVori
-        val totalPriceWithTax  = totalVori*pricePerVori*1.05
-        Log.d("tag","price ${totalPrice} :: quantity -> $totalVori")
 
-        val tPriceInBangla = Utils.getBanglaDigitFromEnglishDigit(totalPrice.roundToInt().toString())
-        val tPriceWithTaxInBangla = Utils.getBanglaDigitFromEnglishDigit(totalPriceWithTax.roundToInt().toString())
+    private fun calculatePriceVoriTogether(
+        vori: Int,
+        ana: Int,
+        roti: Int,
+        point: Int,
+        price: Double,
+        priceUnit: String
+    ) {
 
-        binding.tvFinalGoldPrice.text = "প্রতি ভরি স্বর্ণের দাম $pricePerVori টাকা দরে $vori ভরি,$ana আনা,$roti রতি,$point পয়েন্ট স্বর্ণের দাম\n${Utils.putCommaInNumber(tPriceInBangla)} টাকা।\n৫% ট্যাক্স সহ\n${Utils.putCommaInNumber(tPriceWithTaxInBangla)} টাকা\n\nConsidering $pricePerVori per Bhori price, $vori Bhori, $ana Ana, $roti Roti and $point Point gold price is ${totalPrice.roundToInt()} BDT \nIncluding 5% tax, price is\n${totalPriceWithTax.roundToInt()} BDT"
+        var calculatablePrice = price
+        var priceTitleE = "Vori"
+        var priceTitleB = "ভরি"
+        if (priceUnit == PriceUnitEnum.GRAM.name) {
+            calculatablePrice = Utils.getPriceInVoriFromPriceInGram(price.toDouble())
+            priceTitleE = "Gram"
+            priceTitleB = "গ্রাম"
+        }
+
+        val totalVori: kotlin.Double =
+            vori.toDouble() + (ana / 16.0) + (roti / 96.0) + (point / 960)
+        val totalPrice = totalVori * calculatablePrice
+        val totalPriceWithTax = Utils.getPriceWithTax(totalVori * calculatablePrice)
+        val tPriceInBangla = Utils.getBanglaDigitFromEnglishDigit(totalPrice.roundToInt())
+        val tPriceWithTaxInBangla = Utils.getBanglaDigitFromEnglishDigit(totalPriceWithTax.roundToInt())
+        val tPriceWithMakingCharge = Utils.getPriceWithMakingCharge(totalPriceWithTax)
+        val tPWithMakingChargeBangla = Utils.getBanglaDigitFromEnglishDigit(tPriceWithMakingCharge.roundToInt())
+
+        binding.tvFinalGoldPrice.text =
+            "প্রতি ${priceTitleB} স্বর্ণের দাম $price টাকা দরে $vori ভরি,$ana আনা,$roti রতি,$point পয়েন্ট স্বর্ণের " +
+                    "দাম: ${Utils.putCommaInNumber(tPriceInBangla.toInt())} টাকা।\n" +
+                    "${(Utils.TAX_RATE*100)}% ট্যাক্স সহ: ${Utils.putCommaInNumber(tPriceWithTaxInBangla.toInt())} টাকা\n" +
+                    "${(Utils.MAKING_CHARGE_RATE*100)}% মেকং চার্জ সহ: ${Utils.putCommaInNumber(tPWithMakingChargeBangla.toInt())} টাকা\n\n"+
+                    "Considering $price per ${priceTitleE} price, $vori Bhori, $ana Ana, $roti Roti and $point Point gold price: ${putCommaInNumber(totalPrice.roundToInt())} BDT\n" +
+                    "Including ${(Utils.TAX_RATE*100)}% tax: ${putCommaInNumber(totalPriceWithTax.roundToInt())} BDT"+
+                    "Including ${Utils.MAKING_CHARGE_RATE*100}% making charge: ${putCommaInNumber(tPriceWithMakingCharge.roundToInt())} BDT"
     }
 
-    private fun calculatePriceGram(gram:Double, pricePerGram : Double) {
-        val totalGram : kotlin.Double  = vori.toDouble()+(ana/16.0)+(roti/96.0)+(point/960)
-        val totalPrice  = gram*pricePerGram
-        val totalPriceWithTax  = totalPrice*1.05
-        Log.d("tag","price $totalPrice :: quantity -> $totalGram Gram")
+    private fun calculatePriceWeightGram(gram: Double, price: Double, priceUnit: String) {
+        var calculatedPrice = price
 
-        val tPriceInBangla = Utils.getBanglaDigitFromEnglishDigit(totalPrice.roundToInt().toString())
-        val tPriceInBanglaWithTax = Utils.getBanglaDigitFromEnglishDigit(totalPriceWithTax.roundToInt().toString())
+        if (priceUnit == PriceUnitEnum.VORI.name) {
+            calculatedPrice = Utils.getPriceInGramFromPriceInVori(price)
+        }
 
-        binding.tvFinalGoldPrice.text = "প্রতি গ্রাম স্বর্ণের দাম $pricePerGram টাকা দরে $gram গ্রাম স্বর্ণের দাম\n${Utils.putCommaInNumber(tPriceInBangla)} টাকা।\n৫% ট্যাক্স সহ\n${Utils.putCommaInNumber(tPriceInBanglaWithTax)} টাকা\n\nConsidering $pricePerGram per Gram price, $gram gram gold price is ${totalPrice.roundToInt()} BDT \nIncluding 5% tax, price is\n${totalPriceWithTax.roundToInt()} BDT"
+        //val totalGram: kotlin.Double = vori.toDouble() + (ana / 16.0) + (roti / 96.0) + (point / 960)
+        val totalPrice = gram * calculatedPrice
+        val totalPriceWithTax = Utils.getPriceWithTax(totalPrice)
+        val totalPriceWithMakingCharge = Utils.getPriceWithMakingCharge(totalPriceWithTax)
+        val tPriceInBangla = Utils.getBanglaDigitFromEnglishDigit(totalPrice.roundToInt())
+        val tPriceInBanglaWithTax = Utils.getBanglaDigitFromEnglishDigit(totalPriceWithTax.roundToInt())
+        val tPriceInBanglaWithMakingCharge = Utils.getBanglaDigitFromEnglishDigit(totalPriceWithMakingCharge.roundToInt())
+
+        binding.tvFinalGoldPrice.text =
+            "প্রতি ${PriceUnitEnum.getValueBFromName(priceUnit)} স্বর্ণের দাম $price টাকা দরে $gram গ্রাম স্বর্ণের দাম: ${Utils.putCommaInNumber(tPriceInBangla.toInt())} টাকা।\n" +
+                    "${Utils.TAX_RATE*100}% ট্যাক্স সহ : ${Utils.putCommaInNumber(tPriceInBanglaWithTax.toInt())} টাকা\n" +
+                    "${Utils.MAKING_CHARGE_RATE*100}% মেকিং চার্জ সহ : ${Utils.putCommaInNumber(tPriceInBanglaWithMakingCharge.toInt())} টাকা\n\n" +
+                    "Considering $price per ${PriceUnitEnum.getValueEFromName(priceUnit)} price, $gram gram gold price: ${putCommaInNumber(totalPrice.roundToInt())} BDT" +
+                    "\nIncluding ${Utils.TAX_RATE*100}% tax: ${putCommaInNumber(totalPriceWithTax.roundToInt())} BDT"+
+                    "\nIncluding ${Utils.MAKING_CHARGE_RATE*100}% making charge: ${putCommaInNumber(totalPriceWithMakingCharge.roundToInt())} BDT"
     }
 
-    private fun refreshAllValues(){
+    private fun calculatePriceSeparately(
+        weightQty: Double,
+        weightUnit: String,
+        price: Double,
+        priceUnit: String,
+    ) {
+        var calculatedPrice = price
+        var tPrice = 0.0
+        if (priceUnit == PriceUnitEnum.GRAM.name) {
+            calculatedPrice = Utils.getPriceInVoriFromPriceInGram(price)
+        }
+
+        if (weightUnit == WeightUnitEnum.VORI.name) {
+            tPrice = Utils.getRoundedDigit(calculatedPrice * weightQty,3)
+        }
+        else if (weightUnit == WeightUnitEnum.ANA.name) {
+            tPrice = Utils.getRoundedDigit(calculatedPrice * (Utils.getVoriFromAna(weightQty)),3)
+        }
+        else if (weightUnit == WeightUnitEnum.ROTI.name) {
+            tPrice = Utils.getRoundedDigit(calculatedPrice * (Utils.getVoriFromRoti(weightQty)),3)
+        }
+        else if (weightUnit == WeightUnitEnum.POINT.name) {
+            tPrice = Utils.getRoundedDigit(calculatedPrice * (Utils.getVoriFromPoint(weightQty)),3)
+        }
+
+        val tPriceWithTax = Utils.getPriceWithTax(tPrice)
+        val tPriceWithMakingCharge = Utils.getPriceWithMakingCharge(tPriceWithTax)
+        var tPriceBangla = Utils.getBanglaDigitFromEnglishDigit(tPrice.roundToInt())
+        var tPriceBanglaWithTax = Utils.getBanglaDigitFromEnglishDigit(tPriceWithTax.roundToInt())
+        var tPriceBanglaWithMakingCharge = Utils.getBanglaDigitFromEnglishDigit(tPriceWithMakingCharge.roundToInt())
+
+        Log.d("tag", "price $tPrice :: quantity -> $weightQty")
+        binding.tvFinalGoldPrice.text =
+            "প্রতি ${PriceUnitEnum.getValueBFromName(priceUnit)} স্বর্ণের দাম $price টাকা দরে $weightQty ${WeightUnitEnum.getValueBFromName(weightUnit)} স্বর্ণের দাম: ${Utils.putCommaInNumber(tPriceBangla.toInt())} টাকা।\n" +
+                    "${Utils.TAX_RATE*100}% ট্যাক্স সহ: ${Utils.putCommaInNumber(tPriceBanglaWithTax.toInt())} টাকা\n"+
+                    "${Utils.MAKING_CHARGE_RATE*100}% মেকিং চার্জ সহ: ${Utils.putCommaInNumber(tPriceBanglaWithMakingCharge.toInt())} টাকা\n\n"+
+                    "Considering $price per ${PriceUnitEnum.getValueEFromName(priceUnit)} price, $weightQty ${WeightUnitEnum.getValueEFromName(priceUnit)} gold price: ${putCommaInNumber(tPrice.roundToInt())} BDT\n" +
+                    "Including ${Utils.TAX_RATE*100}% tax : ${putCommaInNumber(tPriceWithTax.roundToInt())} BDT\n"+
+                    "Including ${Utils.MAKING_CHARGE_RATE*100}% making charge : ${putCommaInNumber(tPriceWithMakingCharge.roundToInt())} BDT"
+
+    }
+
+    private fun refreshAllValues() {
         gram = 0.0
         vori = 0
         ana = 0
         roti = 0
         point = 0
-        binding.etUnitPrice.setText("")
-        binding.tvGoldWeight.text = "স্বর্ণের ওজন(Gold Weight)"
+        separateCalcQty = 0.0
+        //binding.etUnitPrice.setText("")
+        binding.tvGoldWeight.text = ""
         binding.tvFinalGoldPrice.text = "ফলাফল(Result)"
     }
 
-    private fun enableBackButton(){
+    private fun enableBackButton() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        startActivity(Intent(this@GoldBuyPrice,MainActivity::class.java))
+        startActivity(Intent(this@GoldBuyPrice, MainActivity::class.java))
         finish()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId==android.R.id.home){
-            startActivity(Intent(this@GoldBuyPrice,MainActivity::class.java))
+        if (item.itemId == android.R.id.home) {
+            startActivity(Intent(this@GoldBuyPrice, MainActivity::class.java))
             finish()
         }
         return super.onOptionsItemSelected(item)
     }
 
     private fun initAdMob() {
-        val  prefManager = PrefManager(this)
+        val prefManager = PrefManager(this)
         val lastAdShowDate = prefManager.lastBannerAdShownGBP
-        if (AdMobUtil.canBannerAdShow(this, lastAdShowDate,Constants.AD_TYPE_BANNER)) {
-            Log.d("tag","Banner Ad Home will load")
+        if (AdMobUtil.canBannerAdShow(this, lastAdShowDate, Constants.AD_TYPE_BANNER)) {
+            Log.d("tag", "Banner Ad Home will load")
 
             binding.adView.visibility = View.VISIBLE
             MobileAds.initialize(this) {
@@ -260,31 +412,28 @@ class GoldBuyPrice : AppCompatActivity() {
         } else {
             binding.adView.visibility = View.GONE
 
-            if(System.currentTimeMillis()-lastAdShowDate<0){
-                prefManager.lastBannerAdShownGBP=System.currentTimeMillis()
+            if (System.currentTimeMillis() - lastAdShowDate < 0) {
+                prefManager.lastBannerAdShownGBP = System.currentTimeMillis()
             }
 
-            Log.d("tag","Banner Ad Home Not Shown")
+            Log.d("tag", "Banner Ad Home Not Shown")
         }
     }
 
-
     private fun initInterstitialAd() {
-        interAd = InterstistialAdHelper(this, this,mInterstitialAd)
+        interAd = InterstistialAdHelper(this, this, mInterstitialAd)
         val lastAdShown = prefManager.lastInterstitialAdShown
-        if (AdMobUtil.canBannerAdShow(this, lastAdShown,Constants.AD_TYPE_INTER)) {
+        if (AdMobUtil.canBannerAdShow(this, lastAdShown, Constants.AD_TYPE_INTER)) {
             interAd.loadinterAd(prefManager.adUnitIdInterstitial) {
                 Log.d("InterAd", "Inter ad loaded -> $it")
                 isAdLoaded = it
             }
-        }
-        else{
-            if(System.currentTimeMillis()-lastAdShown<0){
-                prefManager.lastInterstitialAdShown=System.currentTimeMillis()
+        } else {
+            if (System.currentTimeMillis() - lastAdShown < 0) {
+                prefManager.lastInterstitialAdShown = System.currentTimeMillis()
             }
         }
     }
-
 
     private fun showInterAd() {
         if (isAdLoaded) {
@@ -306,13 +455,60 @@ class GoldBuyPrice : AppCompatActivity() {
         }
     }
 
-    private fun initCalculation(){
-        if(unitIndex==0){
-            calculatePriceVori(vori,ana,roti,point,binding.etUnitPrice.text.toString().toInt())
+    private fun initCalculation() {
+        if (priceUnitIndex == PRICE_UNIT_GRAM_INDEX) {
+            if (weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_GRAM_INDEX) {
+                calculatePriceWeightGram(
+                    gram, binding.etUnitPrice.text.toString().toDouble(),
+                    PriceUnitEnum.GRAM.name
+                )
+            } else if (weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX) {
+                calculatePriceVoriTogether(
+                    vori,
+                    ana,
+                    roti,
+                    point,
+                    binding.etUnitPrice.text.toString().toDouble(), PriceUnitEnum.GRAM.name
+                )
+            } else if (weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_SEPARATELY_INDEX) {
+                calculatePriceSeparately(separateCalcQty,separateCalcWeightUnit,binding.etUnitPrice.text.toString().toDouble(),PriceUnitEnum.GRAM.name)
+            }
+        } else if (priceUnitIndex == PRICE_UNIT_VORI_INDEX) {
+            if (weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_GRAM_INDEX) {
+                calculatePriceWeightGram(
+                    gram, binding.etUnitPrice.text.toString().toDouble(),
+                    PriceUnitEnum.VORI.name
+                )
+            }
+            else if (weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX) {
+                calculatePriceVoriTogether(
+                    vori,
+                    ana,
+                    roti,
+                    point,
+                    binding.etUnitPrice.text.toString().toDouble(), PriceUnitEnum.VORI.name
+                )
+            } else if (weightChooserUnitIndex == WEIGHT_CHOOSER_UNIT_SEPARATELY_INDEX) {
+                calculatePriceSeparately(separateCalcQty,separateCalcWeightUnit,binding.etUnitPrice.text.toString().toDouble(),PriceUnitEnum.VORI.name)
+            }
         }
-        else if (unitIndex==1){
-            calculatePriceGram(gram,binding.etUnitPrice.text.toString().toDouble())
-        }
+    }
+
+    companion object {
+        const val WEIGHT_CHOOSER_UNIT_GRAM_INDEX = 0
+        const val WEIGHT_CHOOSER_UNIT_TOGETHER_INDEX = 1
+        const val WEIGHT_CHOOSER_UNIT_SEPARATELY_INDEX = 2
+
+        const val WEIGHT_CHOOSER_UNIT_GRAM_TEXT = "গ্রামে মাপুন-Measure In Gram"
+        const val WEIGHT_CHOOSER_UNIT_TOGETHER_TEXT =
+            "একসাথে ভরি,আনা,রতি,পয়েন্ট মিলিয়ে-Vori,Ana,Roti,Point Together"
+        const val WEIGHT_CHOOSER_UNIT_SEPARATELY_TEXT =
+            "আলাদা ভাবে ভরি/আনা/রতি/পয়েন্ট-Separately Vori,Ana,Roti,Point"
+
+        const val PRICE_UNIT_GRAM_INDEX = 0
+        const val PRICE_UNIT_VORI_INDEX = 1
+        const val PRICE_UNIT_GRAM_TEXT = "প্রতি গ্রাম(Per Gram)"
+        const val PRICE_UNIT_VORI_TEXT = "প্রতি ভরি(Per Bhori)"
     }
 
 }

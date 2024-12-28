@@ -57,6 +57,10 @@ class PrefManager(val context : Context) {
         get() = pref.getString("adUnitIdRewarded", "ca-app-pub-5778949627900306/7643052880")!!
         set(value) {editor.putString("adUnitIdRewarded",value).commit()}
 
+    var adUnitIdRewardedInterstitial:String
+        get() = pref.getString("adUnitIdRewardedInterstitial", "ca-app-pub-5778949627900306/1530002884")!!
+        set(value) {editor.putString("adUnitIdRewardedInterstitial",value).commit()}
+
     var adUnitIdAppOpen:String
         get() = pref.getString("adUnitIdAppOpen", "ca-app-pub-5778949627900306/8602648476")!!
         set(value) {editor.putString("adUnitIdAppOpen",value).commit()}

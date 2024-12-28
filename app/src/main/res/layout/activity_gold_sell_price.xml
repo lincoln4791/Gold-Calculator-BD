@@ -96,6 +96,26 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_spinnerWeightUnitChooser"
+        style="@style/cv_spinner_FullReport"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cv_etCutPercentTitle">
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/spinner_weight_unit_chooser"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/cv_goldWeight"
         style="@style/cv_spinner_FullReport"
         android:layout_width="0dp"
@@ -107,14 +127,14 @@
         android:layout_marginBottom="10dp"
         app:layout_constraintEnd_toEndOf="@+id/cv_etUnitPrice"
         app:layout_constraintStart_toStartOf="@+id/cv_spinnerYearly_MonthlyReport"
-        app:layout_constraintTop_toBottomOf="@+id/cv_etCutPercent">
+        app:layout_constraintTop_toBottomOf="@+id/cv_spinnerWeightUnitChooser">
 
         <TextView
             android:id="@+id/tv_goldWeight"
             style="@style/tv_common_bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="স্বর্ণের ওজন(Gold Weight)"
+            android:hint="স্বর্ণের ওজন(Gold Weight)"
             android:textStyle="bold" />
 
     </com.google.android.material.card.MaterialCardView>
