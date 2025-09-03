@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/back"
-    tools:context=".activities.AddSubInVori">
+    tools:context=".activities.AddSubInVori"
+    android:fitsSystemWindows="true">
 
 
     <com.google.android.material.card.MaterialCardView

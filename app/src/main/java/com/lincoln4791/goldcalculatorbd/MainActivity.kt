@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -29,10 +30,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
       prefManager = PrefManager(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        //WindowCompat.setDecorFitsSystemWindows(window, false)
         val actionBar = supportActionBar
         actionBar?.apply {
             setDisplayShowCustomEnabled(true)
