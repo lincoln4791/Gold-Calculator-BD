@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.1.0"
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
 
@@ -75,27 +75,13 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 
     //UTS
-/*    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1"
-    testImplementation "app.cash.turbine:turbine:1.0.0"
-    testImplementation "org.mockito:mockito-core:5.2.0"
-    testImplementation "org.mockito.kotlin:mockito-kotlin:5.1.0"
-    testImplementation "org.junit.jupiter:junit-jupiter:5.10.0"*/
     // Coroutine test library
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1"
 
-// Mockito
-/*    testImplementation "org.mockito:mockito-core:4.11.0"
-    testImplementation "net.bytebuddy:byte-buddy:1.14.5"
-    testImplementation "org.mockito.kotlin:mockito-kotlin:4.1.0"*/
-    testImplementation "org.mockito:mockito-core:5.11.0" // Or latest
+    testImplementation "org.mockito:mockito-core:5.11.0"
     testImplementation "net.bytebuddy:byte-buddy:1.14.12"
     testImplementation "net.bytebuddy:byte-buddy-agent:1.14.12"
     testImplementation "org.mockito.kotlin:mockito-kotlin:5.2.1"
-    /*implementation "org.mockito:mockito-core:5.11.0" // Or latest
-    implementation "net.bytebuddy:byte-buddy:1.14.12"
-    implementation "net.bytebuddy:byte-buddy-agent:1.14.12"
-    implementation "org.mockito.kotlin:mockito-kotlin:5.2.1"*/
-
 
 
 // For LiveData / Flow testing
@@ -128,9 +114,9 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
 
-    implementation 'com.google.dagger:hilt-android:2.50'
-    kapt 'com.google.dagger:hilt-compiler:2.50'
-    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
+    implementation 'com.google.dagger:hilt-android:2.54'
+    kapt 'com.google.dagger:hilt-compiler:2.54'
+    implementation "androidx.hilt:hilt-navigation-compose:1.2.0"
 
 
 
