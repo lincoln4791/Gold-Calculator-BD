@@ -12,6 +12,8 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.lincoln4791.dailyexpensemanager.admobAdsUpdated.InterstistialAdHelper
@@ -58,6 +60,11 @@ class GoldSellPrice : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         prefManager = PrefManager(this)
         binding = ActivityGoldSellPriceBinding.inflate(layoutInflater)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
         setContentView(binding.root)
         initInterstitialAd()
         Utils.changeNavBarColor(this,this)

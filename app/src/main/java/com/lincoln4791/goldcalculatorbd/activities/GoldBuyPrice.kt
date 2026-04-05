@@ -49,12 +49,12 @@ class GoldBuyPrice : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         prefManager = PrefManager(this)
         super.onCreate(savedInstanceState)
+        binding = ActivityGoldBuyPriceBinding.inflate(layoutInflater)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        binding = ActivityGoldBuyPriceBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initInterstitialAd()
         Utils.changeNavBarColor(this, this)
