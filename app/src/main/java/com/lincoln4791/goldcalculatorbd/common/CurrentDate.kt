@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import com.lincoln4791.goldcalculatorbd.common.DayDifference
 import com.lincoln4791.goldcalculatorbd.common.NetworkCheck
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -160,7 +161,7 @@ class CurrentDate {
                     dayValue = "আগামি কাল"
                 }
                 else{
-                    dayValue = "${DayDifference.getBngDigitFromEngDigit(abs(numberOfDay).toString())} দিন পর"
+                    dayValue = "${DayDifference.Companion.getBngDigitFromEngDigit(abs(numberOfDay).toString())} দিন পর"
                 }
             }
 

@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -21,17 +24,23 @@ import com.lincoln4791.goldcalculatorbd.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    ;
     private lateinit var binding: ActivityMainBinding
     private lateinit var prefManager : PrefManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-
-      prefManager = PrefManager(this)
+        prefManager = PrefManager(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
         val actionBar = supportActionBar
         actionBar?.apply {
             setDisplayShowCustomEnabled(true)
@@ -47,7 +56,7 @@ class MainActivity : AppCompatActivity() {
             loadRewardedInterstitialAd()
         }
 
-        Utils.changeNavBarColor(this,this)
+        // Utils.changeNavBarColor(this,this) // Removed as edge-to-edge handles this better
         val navView: BottomNavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         val appBarConfiguration = AppBarConfiguration(setOf(
@@ -69,10 +78,6 @@ class MainActivity : AppCompatActivity() {
                     super.onAdLoaded(ad)
                     rewardedInterstitialAd = ad
                 }
-                /*override fun onAdLoaded(ad: RewardedAd) {
-                    Log.d("tag", "Rewarded ad loaded.")
-                    rewardedAd = ad
-                }*/
 
                 override fun onAdFailedToLoad(error: com.google.android.gms.ads.LoadAdError) {
                     Log.d("tag", "Failed to load rewarded ad: ${error.message}")

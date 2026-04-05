@@ -6,10 +6,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.ads.MobileAds
-import com.lincoln4791.goldcalculatorbd.common.NetworkCheck
-import com.lincoln4791.goldcalculatorbd.common.VersionControl
 import com.lincoln4791.goldcalculatorbd.Constants
 import com.lincoln4791.goldcalculatorbd.PrefManager
 import com.lincoln4791.goldcalculatorbd.activities.AddSubInVori
@@ -35,6 +35,13 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+        
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+        
         return binding.root
     }
 
@@ -67,8 +74,6 @@ class HomeFragment : Fragment() {
         binding.ivTitle.setOnClickListener{
             requireContext().startActivity(Intent(requireContext(), TempActivity::class.java))
         }
-
-
     }
 
 

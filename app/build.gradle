@@ -57,11 +57,49 @@ android {
         buildConfig = true
         compose true
     }
+    testOptions {
+        unitTests.includeAndroidResources = true
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
 }
 
 dependencies {
     implementation 'androidx.activity:activity:1.9.3'
+    implementation 'androidx.arch.core:core-testing:2.2.0'
 
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+
+    //UTS
+/*    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1"
+    testImplementation "app.cash.turbine:turbine:1.0.0"
+    testImplementation "org.mockito:mockito-core:5.2.0"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:5.1.0"
+    testImplementation "org.junit.jupiter:junit-jupiter:5.10.0"*/
+    // Coroutine test library
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1"
+
+// Mockito
+/*    testImplementation "org.mockito:mockito-core:4.11.0"
+    testImplementation "net.bytebuddy:byte-buddy:1.14.5"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:4.1.0"*/
+    testImplementation "org.mockito:mockito-core:5.11.0" // Or latest
+    testImplementation "net.bytebuddy:byte-buddy:1.14.12"
+    testImplementation "net.bytebuddy:byte-buddy-agent:1.14.12"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:5.2.1"
+    /*implementation "org.mockito:mockito-core:5.11.0" // Or latest
+    implementation "net.bytebuddy:byte-buddy:1.14.12"
+    implementation "net.bytebuddy:byte-buddy-agent:1.14.12"
+    implementation "org.mockito.kotlin:mockito-kotlin:5.2.1"*/
+
+
+
+// For LiveData / Flow testing
+    testImplementation "androidx.arch.core:core-testing:2.2.0"
 
     //Compose
     def composeBom = platform('androidx.compose:compose-bom:2024.10.01')
@@ -106,9 +144,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.8.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.8.3'
     implementation 'com.google.firebase:firebase-config:22.0.1'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+
 
 
     //ads

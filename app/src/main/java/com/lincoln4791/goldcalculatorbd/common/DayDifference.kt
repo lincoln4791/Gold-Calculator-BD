@@ -1,20 +1,25 @@
-package com.lincoln4791.dailyexpensemanager.common.util
+package com.lincoln4791.goldcalculatorbd.common
 
 import android.util.Log
 import java.util.*
 
 class DayDifference {
+
+    fun testValueThatReturn5() : String{
+        return "5";
+    }
+
     companion object{
         fun getDaysDifference(fromDate: Date?, toDate: Date?): Int {
             return if (fromDate == null || toDate == null) 0 else ((toDate.time - fromDate.time) / (1000 * 60 * 60 * 24)).toInt()
         }
 
         fun getBngDigitFromEngDigit(engDigit : String):String{
-            Log.d("tag","Bangla DIgit is -> $engDigit")
+            //Log.d("tag","Bangla DIgit is -> $engDigit")
             var bngDigit : String = ""
 
             for(dgt in engDigit){
-                Log.d("tag","Looping, element is -> $dgt")
+                //Log.d("tag","Looping, element is -> $dgt")
 
                 if(dgt == '0'){
                     bngDigit += "০"
@@ -47,12 +52,17 @@ class DayDifference {
                     bngDigit += "৯"
                 }
                 else{
-                    Log.d("tag","Something is not ok,please check input data")
+                    //Log.d("tag","Something is not ok,please check input data")
                 }
             }
 
-            Log.d("tag","Bangla DIgit is -> $bngDigit")
+            //Log.d("tag","Bangla DIgit is -> $bngDigit")
             return bngDigit
+        }
+
+
+        fun testValueThatReturn5() : String{
+            return "5";
         }
 
     }

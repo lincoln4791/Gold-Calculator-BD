@@ -9,7 +9,6 @@ import android.view.View
 import android.webkit.WebSettings
 import android.webkit.WebViewClient
 import com.google.android.gms.ads.MobileAds
-import com.lincoln4791.dailyexpensemanager.common.util.CurrentDate
 import com.lincoln4791.goldcalculatorbd.Constants
 import com.lincoln4791.goldcalculatorbd.MainActivity
 import com.lincoln4791.goldcalculatorbd.PrefManager
