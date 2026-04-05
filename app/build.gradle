@@ -32,8 +32,8 @@ android {
         applicationId "com.lincoln4791.goldcalculatorbd"
         minSdk 26
         targetSdk 35
-        versionCode 6
-        versionName "1.1.5"
+        versionCode 7
+        versionName "1.1.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -148,7 +148,7 @@ dependencies {
 
 
     //ads
-    implementation 'com.google.android.gms:play-services-ads:21.1.0'
+    implementation 'com.google.android.gms:play-services-ads:25.1.0'
 
     implementation 'com.google.firebase:firebase-config-ktx:22.0.1'
 
