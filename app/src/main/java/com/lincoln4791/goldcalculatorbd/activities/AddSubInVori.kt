@@ -5,6 +5,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -353,6 +355,9 @@ class AddSubInVori : AppCompatActivity() {
                     prefManager.lastInterstitialAdShown = System.currentTimeMillis()
                     isAdLoaded = false
                     calculateVoriToVori(vori,ana,roti,point,vori2,ana2,roti2,point2)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        initInterstitialAd()
+                    },prefManager.interAdInterval+1000)
                 } else {
                     Log.d("InterAD", "InterAd Not been shown->$error")
                     calculateVoriToVori(vori,ana,roti,point,vori2,ana2,roti2,point2)

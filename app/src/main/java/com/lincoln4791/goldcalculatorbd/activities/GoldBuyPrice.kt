@@ -5,6 +5,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -29,7 +31,7 @@ import kotlin.math.roundToInt
 
 class GoldBuyPrice : AppCompatActivity() {
     private lateinit var prefManager: PrefManager
-    private lateinit var interAd: InterstistialAdHelper
+    private  var interAd: InterstistialAdHelper?=null
     private var mInterstitialAd: InterstitialAd? = null
     private var isAdLoaded = false
     private var priceUnit = PRICE_UNIT_GRAM_TEXT
@@ -428,10 +430,11 @@ class GoldBuyPrice : AppCompatActivity() {
     }
 
     private fun initInterstitialAd() {
+        interAd = null
         interAd = InterstistialAdHelper(this, this, mInterstitialAd)
         val lastAdShown = prefManager.lastInterstitialAdShown
         if (AdMobUtil.canBannerAdShow(this, lastAdShown, Constants.AD_TYPE_INTER)) {
-            interAd.loadinterAd(prefManager.adUnitIdInterstitial) {
+            interAd?.loadinterAd(prefManager.adUnitIdInterstitial) {
                 Log.d("InterAd", "Inter ad loaded -> $it")
                 isAdLoaded = it
             }
@@ -445,12 +448,16 @@ class GoldBuyPrice : AppCompatActivity() {
     private fun showInterAd() {
         if (isAdLoaded) {
             Log.d("InterAD", "InterAd Loaded")
-            interAd.showInterAd { isShown: Boolean, error: String? ->
+            interAd?.showInterAd { isShown: Boolean, error: String? ->
                 if (isShown) {
                     Log.d("InterAD", "InterAd has been shown")
                     prefManager.lastInterstitialAdShown = System.currentTimeMillis()
                     isAdLoaded = false
                     initCalculation()
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        initInterstitialAd()
+                    },prefManager.interAdInterval+1000)
+
                 } else {
                     Log.d("InterAD", "InterAd Not been shown->$error")
                     initCalculation()

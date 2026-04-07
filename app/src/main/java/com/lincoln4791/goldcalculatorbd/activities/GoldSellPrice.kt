@@ -4,6 +4,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -594,6 +596,9 @@ class GoldSellPrice : AppCompatActivity() {
                     prefManager.lastInterstitialAdShown = System.currentTimeMillis()
                     isAdLoaded = false
                     initCalculation()
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        initInterstitialAd()
+                    },prefManager.interAdInterval+1000)
                 } else {
                     Log.d("InterAD", "InterAd Not been shown->$error")
                     initCalculation()
