@@ -32,8 +32,9 @@ object VersionControl {
                 val version  = firebaseRemoteConfig.getString(Constants.APP_VERSION)
                 Log.d("appVersion", "Remote : appVersion is : $version")
 
-                if(!version.isNullOrEmpty()){
-                    if(version != BuildConfig.VERSION_NAME){
+                if(version.isNotEmpty()){
+                    //if(version != BuildConfig.VERSION_NAME){
+                    if(isVersionGreater(BuildConfig.VERSION_NAME,version)){
                         showNewVersionAvailableDialog(context)
                     }
                     else{
@@ -72,4 +73,21 @@ object VersionControl {
         }
 
     }
+
+    fun isVersionGreater(current: String, newVersion: String): Boolean {
+        val currentParts = current.split(".").map { it.toInt() }
+        val newParts = newVersion.split(".").map { it.toInt() }
+
+        val maxLength = maxOf(currentParts.size, newParts.size)
+
+        for (i in 0 until maxLength) {
+            val currentPart = currentParts.getOrElse(i) { 0 }
+            val newPart = newParts.getOrElse(i) { 0 }
+
+            if (newPart > currentPart) return true
+            if (newPart < currentPart) return false
+        }
+        return false
+    }
+
 }
